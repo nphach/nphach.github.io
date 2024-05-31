@@ -1,5 +1,6 @@
 import {useState, useEffect} from "react";
 import {Nav, Navbar, Container} from "react-bootstrap";
+import {List} from "react-bootstrap-icons";
 import logo from "../assets/img/logo.png";
 import githubLogo from "../assets/img/githubLogo.png";
 import linkedinLogo from "../assets/img/linkedinLogo.png";
@@ -33,7 +34,7 @@ export const NavBar = () => {
             <img src={logo} alt="logo" />
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav">
-            <span className="navbar-toggler-icon"></span>
+            <List />
         </Navbar.Toggle>
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
