@@ -1,4 +1,4 @@
-# My personal portfolio
+# My personal portfolio website
 
 To-do:
 - add header
@@ -7,4 +7,3 @@ To-do:
 - add contact me section
 
 Bugs/ issues:
-- links should collapse to dropdown menu for smaller screens

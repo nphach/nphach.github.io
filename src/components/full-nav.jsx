@@ -5,54 +5,46 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
-import { FaGithub, FaLinkedin } from "react-icons/fa"
+import { siteConfig } from "@/config/site"
+
+function MainNav() {
+  return (
+    <>
+      {siteConfig.mainNav.map((item) => (
+        <NavigationMenuItem key={item.href}>
+          <a href={item.href} legacyBehavior passHref>
+            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+              {item.title}
+            </NavigationMenuLink>
+          </a>
+        </NavigationMenuItem>
+      ))}
+    </>
+  )
+}
+
+function SocialLinks() {
+  return (
+    <>
+      {siteConfig.links.map((item) => (
+        <NavigationMenuItem>
+          <a href={item.href} legacyBehavior>
+            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+              <item.icon />
+            </NavigationMenuLink>
+          </a>
+        </NavigationMenuItem>
+      ))}
+    </>
+  )
+}
 
 export default function FullNav() {
   return ( 
     <NavigationMenu>
       <NavigationMenuList>
-        <NavigationMenuItem>
-          <a href="#home" legacyBehavior passHref>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              home
-            </NavigationMenuLink>
-          </a>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <a href="#about" legacyBehavior passHref>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              about
-            </NavigationMenuLink>
-          </a>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <a href="#projects" legacyBehavior passHref>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              projects
-            </NavigationMenuLink>
-          </a>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <a href="#contact" legacyBehavior passHref>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              contact
-            </NavigationMenuLink>
-          </a>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <a href="https://github.com/nphach" legacyBehavior>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              <FaGithub />
-            </NavigationMenuLink>
-          </a>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <a href="https://linkedin.com/in/nphach" legacyBehavior>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              <FaLinkedin />
-            </NavigationMenuLink>
-          </a>
-        </NavigationMenuItem>
+        <MainNav />
+        <SocialLinks />
       </NavigationMenuList>
     </NavigationMenu>
   );
