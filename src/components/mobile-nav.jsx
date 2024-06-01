@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button"
 import {
-    NavigationMenu,
-    NavigationMenuItem,
-    NavigationMenuList,
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuList,
 } from "@/components/ui/navigation-menu"
 import {
   Sheet,

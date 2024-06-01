@@ -7,3 +7,5 @@ To-do:
 - add contact me section
 
 Bugs/ issues:
+- card list format
+- carousel ratio

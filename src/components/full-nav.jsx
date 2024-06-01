@@ -12,7 +12,7 @@ function MainNav() {
     <>
       {siteConfig.mainNav.map((item) => (
         <NavigationMenuItem key={item.href}>
-          <a href={item.href} legacyBehavior passHref>
+          <a href={item.href} passhref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
               {item.title}
             </NavigationMenuLink>
@@ -28,7 +28,7 @@ function SocialLinks() {
     <>
       {siteConfig.links.map((item) => (
         <NavigationMenuItem>
-          <a href={item.href} legacyBehavior>
+          <a href={item.href}>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
               <item.icon />
             </NavigationMenuLink>
