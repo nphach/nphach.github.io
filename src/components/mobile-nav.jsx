@@ -27,9 +27,9 @@ function SocialLinks() {
   return (
     <>
       {siteConfig.links.map((item) => (
-        <Button variant="ghost">
+        <><Button variant="ghost">
           <a href={item.href}><item.icon /></a>
-        </Button>
+        </Button></>
       ))}
     </>
   )
@@ -42,7 +42,7 @@ export default function MobileNav() {
         <NavigationMenuItem>
           <Sheet>
             <SheetTrigger><FaBars /></SheetTrigger>
-            <SheetContent className="w-[250px]">
+            <SheetContent className="w-[250px] z-[100]">
               <div className="flex flex-col space-y-4 m-10">
                 <MainNav />
                 <div className="flex justify-center space-x-4">

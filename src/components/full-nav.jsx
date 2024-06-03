@@ -10,8 +10,8 @@ import { siteConfig } from "@/config/site"
 function MainNav() {
   return (
     <>
-      {siteConfig.mainNav.map((item) => (
-        <NavigationMenuItem key={item.href}>
+      {siteConfig.mainNav.map((item, i) => (
+        <NavigationMenuItem key={i} >
           <a href={item.href} passhref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
               {item.title}
@@ -26,8 +26,8 @@ function MainNav() {
 function SocialLinks() {
   return (
     <>
-      {siteConfig.links.map((item) => (
-        <NavigationMenuItem>
+      {siteConfig.links.map((item, i) => (
+        <NavigationMenuItem key={i}>
           <a href={item.href}>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
               <item.icon />

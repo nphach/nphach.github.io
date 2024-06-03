@@ -7,5 +7,5 @@ To-do:
 - add contact me section
 
 Bugs/ issues:
-- card list format
-- carousel ratio
+- tweak carousel/ card formatting
+- navbar should be fixed at top
