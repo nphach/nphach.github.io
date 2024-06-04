@@ -16,8 +16,8 @@ import { siteConfig } from "@/config/site"
 function MainNav() {
   return (
     <>
-      {siteConfig.mainNav.map((item) => (
-        <SheetClose><Button variant="link"><a href={item.href}>{item.title}</a></Button></SheetClose>
+      {siteConfig.mainNav.map((item, i) => (
+        <SheetClose key={i}><><Button variant="link"><a href={item.href}>{item.title}</a></Button></></SheetClose>
       ))}
     </>
   )
@@ -26,10 +26,10 @@ function MainNav() {
 function SocialLinks() {
   return (
     <>
-      {siteConfig.links.map((item) => (
-        <><Button variant="ghost">
+      {siteConfig.links.map((item, i) => (
+        <div key={i}><Button variant="ghost">
           <a href={item.href}><item.icon /></a>
-        </Button></>
+        </Button></div>
       ))}
     </>
   )

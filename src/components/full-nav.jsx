@@ -11,12 +11,10 @@ function MainNav() {
   return (
     <>
       {siteConfig.mainNav.map((item, i) => (
-        <NavigationMenuItem key={i} >
-          <a href={item.href} passhref>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              {item.title}
-            </NavigationMenuLink>
-          </a>
+        <NavigationMenuItem key={i}>
+          <NavigationMenuLink href={item.href} passhref="true" className={navigationMenuTriggerStyle()}>
+            {item.title}
+          </NavigationMenuLink>
         </NavigationMenuItem>
       ))}
     </>
@@ -28,11 +26,9 @@ function SocialLinks() {
     <>
       {siteConfig.links.map((item, i) => (
         <NavigationMenuItem key={i}>
-          <a href={item.href}>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              <item.icon />
-            </NavigationMenuLink>
-          </a>
+          <NavigationMenuLink className={navigationMenuTriggerStyle()} href={item.href} passhref="true">
+            <item.icon />
+          </NavigationMenuLink>
         </NavigationMenuItem>
       ))}
     </>

@@ -13,31 +13,30 @@ import { RiArrowDropRightLine } from "react-icons/ri"
 import { useMediaQuery } from 'react-responsive';
 
 export default function Projects() {
-  const isMobile = useMediaQuery({ maxWidth: 768 });
+  const isMobile = useMediaQuery({ maxWidth: 800 });
 
   return(
-    <div className="flex justify-center items-center w-full h-fit">
-      <Carousel className="w-full">
-      {!isMobile && <CarouselPrevious />}
+      <Carousel className="w-3/5">
+      {!isMobile && <CarouselPrevious className="bg-[#fefefe]/90"/>}
 
-      <CarouselContent>
+      <CarouselContent className="">
         {projectsConfig.map((project, i) => (
           <CarouselItem key={i}>
-          <Card className="flex flex-row h-full max-h-[50vh]">
+          <Card className="flex flex-row h-full m-3 max-h-[55vh] rounded-lg">
             {project.image && !isMobile &&
-              <img src={project.image} alt="" className="h-full object-contain flex h-full max-h-full border-r"/>}
+              <img src={project.image} alt="" className="h-full object-contain flex max-max- self-center border-r rounded-l-lg"/>}
 
             <div className="flex w-full flex flex-col">
               <div className="flex items-center justify-center text-center border-b">
                 <CardHeader>
-                <CardTitle>{project.title}</CardTitle>
+                <CardTitle className="text-xl text-balance">{project.title}</CardTitle>
                 <div>{project.tech}</div>
                 </CardHeader>
               </div>
               
-              <ScrollArea className="flex overflow-auto p-3">
+              <ScrollArea className="flex overflow-auto p-3 bg-[#fefefe]/90 rounded-lg">
                 <CardContent>
-                  <ul className="list-disc text-start">
+                  <ul className="list-disc text-start text-pretty">
                   {project.description.map((item, i) => (
                     <li key={i}>{item}</li>
                   ))}
@@ -56,8 +55,7 @@ export default function Projects() {
         ))}
         </CarouselContent>
 
-      {!isMobile && <CarouselNext />}
+      {!isMobile && <CarouselNext className="bg-[#fefefe]/90"/>}
       </Carousel>
-    </div>
   )
 }

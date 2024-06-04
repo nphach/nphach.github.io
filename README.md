@@ -1,11 +1,9 @@
 # My personal portfolio website
 
 To-do:
-- add header
+- add functioning contact me section w backend
+- add a cool header
 - add about me section
-- add projects section
-- add contact me section
 
 Bugs/ issues:
-- tweak carousel/ card formatting
-- navbar should be fixed at top
+- pictures in the projects section aren't rounded!!!

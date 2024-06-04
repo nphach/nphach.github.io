@@ -1,10 +1,12 @@
-import { useMediaQuery } from 'react-responsive';
 import './App.css'
+import { useMediaQuery } from 'react-responsive';
 import { RiStarSmileLine } from "react-icons/ri";
-import Portrait from './assets/me.png';
-import MobileNav from "/src/components/mobile-nav"
 import FullNav from "/src/components/full-nav"
+import MobileNav from "/src/components/mobile-nav"
+import Header from "/src/components/header"
+import About from "/src/components/about"
 import Projects from "/src/components/projects"
+import Contact from "/src/components/contact"
 import { Separator } from "@/components/ui/separator"
 
 function App() {
@@ -12,24 +14,28 @@ function App() {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 z-[50] w-full backdrop-blur-[3px] bg-white/90">
-      <div className="flex h-[50px] justify-between items-center mx-20">
+      <div className="fixed top-0 left-0 z-50 w-full backdrop-blur-[3px] bg-white/90 flex h-[50px] justify-between items-center px-20">
         <a href="#home">
         <RiStarSmileLine className="h-10 w-auto ml-3" />
         </a>
         {isMobile ? <MobileNav /> : <FullNav />}
       </div>
-      <Separator />
-      </nav>
+      <Separator/>
 
-      <section id="home" className="pt-[60px] h-[20px]" />
-      <div className="flex justify-center h-[40vh]">
-        <img src={ Portrait } alt="me"/>
-      </div>
-      <div className="h-[20px]" />
+      <section id="home" className="flex justify-center items-center bg-black w-screen h-screen">
+        <Header />
+      </section>
 
-      <section id="projects" className="flex justify-center items-center w-4/5 min-w-[300px] h-[50vh] mx-auto">
+      <section id="about" className="flex justify-center items-center bg-[#a4dded] w-screen h-screen">
+        <About />
+      </section>
+
+      <section id="projects" className="flex justify-center items-center bg-[#E6E6FA] h-screen w-screen">
         <Projects />
+      </section>
+
+      <section id="contact" className="flex justify-center items-center bg-[#98FF98] h-screen w-screen">
+        <Contact />
       </section>
     </>
   );
