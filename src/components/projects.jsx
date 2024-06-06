@@ -13,18 +13,19 @@ import { RiArrowDropRightLine } from "react-icons/ri"
 import { useMediaQuery } from 'react-responsive';
 
 export default function Projects() {
-  const isMobile = useMediaQuery({ maxWidth: 800 });
+  const isMobile = useMediaQuery({ maxWidth: 768 });
 
   return(
-      <Carousel className="w-3/5">
+    <section id="projects" className="flex justify-center items-center bg-[#98ff98] h-screen w-screen">
+      <Carousel className="min-h-[575px] min-w-[342px] w-3/5">
       {!isMobile && <CarouselPrevious className="bg-[#fefefe]/90"/>}
 
-      <CarouselContent className="">
+      <CarouselContent>
         {projectsConfig.map((project, i) => (
           <CarouselItem key={i}>
           <Card className="flex flex-row h-full m-3 max-h-[55vh] rounded-lg">
             {project.image && !isMobile &&
-              <img src={project.image} alt="" className="h-full object-contain flex max-max- self-center border-r rounded-l-lg"/>}
+              <img src={project.image} alt="" className="h-full object-contain flex self-center border-r rounded-l-lg"/>}
 
             <div className="flex w-full flex flex-col">
               <div className="flex items-center justify-center text-center border-b">
@@ -57,5 +58,6 @@ export default function Projects() {
 
       {!isMobile && <CarouselNext className="bg-[#fefefe]/90"/>}
       </Carousel>
+    </section>
   )
 }

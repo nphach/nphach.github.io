@@ -1,9 +1,9 @@
 # My personal portfolio website
 
 To-do:
-- add functioning contact me section w backend
-- add a cool header
-- add about me section
-
-Bugs/ issues:
-- pictures in the projects section aren't rounded!!!
+- add support for emailjs contact form
+- add snap-scroll down button
+- animate about-me icon
+- add title for projects section
+- animate backgrounds for about, projects, contact section
+- click to expand photo in projects section
