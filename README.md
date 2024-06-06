@@ -5,5 +5,5 @@ To-do:
 - add snap-scroll down button
 - animate about-me icon
 - add title for projects section
-- animate backgrounds for about, projects, contact section
+- animate backgrounds for projects, contact section
 - click to expand photo in projects section

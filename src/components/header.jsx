@@ -31,7 +31,7 @@ export default function Header() {
       } else {
         setTimeout(() => {
           erase();
-        }, 3000);
+        }, 1500);
       }
     }
 
