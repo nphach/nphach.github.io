@@ -10,7 +10,7 @@ import Lenis from 'lenis';
 import Me from '../assets/nyan.jpeg'
 
 export default function About() {
-  const colors = ["#87cefa", "#ffb6c1", "#fff0f5", "#e9b5d5", "#e7eaf1", "#fac0b5"]
+  const colors = ["#87cefa", "#ffb6c1", "#fff0f5", "#e9b5d5", "#e7eaf1", "#fac0b5", "#a4dded"]
   const getRandomColor = () => colors[Math.floor(Math.random() * colors.length)]
 
   useEffect(() => {
@@ -34,7 +34,7 @@ export default function About() {
   
     return (
       <motion.div style={{ translateX }} className="flex whitespace-nowrap">
-        {[...Array(5)].map((_, i) => (
+        {[...Array(8)].map((_, i) => (
           <Phrase key={i} color={getRandomColor()} />
         ))}
       </motion.div>
@@ -49,7 +49,7 @@ export default function About() {
 
   return (
     <>
-    <section id="about" className="relative p-6 flex gap-6 justify-center items-center bg-[#a4dded] w-screen h-screen">
+    <section id="about" className="relative p-6 flex gap-6 justify-center items-center w-screen h-screen">
       <div className="absolute inset-0 overflow-hidden z-[10]" ref={container}>
         <div className="absolute top-1/2 left-0 w-full transform -translate-y-1/2">
           <Slide offset={"-40%"} direction={'left'} progress={scrollYProgress}/>

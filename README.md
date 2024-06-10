@@ -2,8 +2,11 @@
 
 To-do:
 - add support for emailjs contact form
-- add snap-scroll down button
-- animate about-me icon
-- add title for projects section
-- animate backgrounds for projects, contact section
 - click to expand photo in projects section
+- add snap-scroll down button
+- improve general performance
+
+Other ideas:
+- animate background for contact section
+- animate about-me icon
+
