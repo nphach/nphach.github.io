@@ -28,18 +28,18 @@ export default function Projects() {
   useEffect( () => {
     scrollYProgress.on("change", e => {
       paths.current.forEach( (path, i) => {
-        path.setAttribute("startOffset", -12 + (i * 12) + (e * 24) + "%");
+        path.setAttribute("startOffset", -15 + (i * 16) + (e * 24) + "%");
       })
     })
   }, [])
 
   return(
-    <section id="about" className="relative p-6 flex gap-6 justify-center items-center w-screen h-screen">
+    <section id="projects" className="relative p-6 flex gap-6 justify-center items-center w-screen h-screen overflow-hidden">
       <div className="absolute inset-0 overflow-hidden z-[10]" ref={container}>
         <svg className="absolute top-1/2 h-screen left-0 w-full min-w-[1460px] transform -translate-y-1/2" viewBox="0 0 1465 500" fill="none">
           <path id="curve" fill="none" d="M0.5 145C92.1667 23.1667 307.4 -134.8 435 208C594.5 636.5 811.463 438.833 866 335.5C932.5 209.5 1090 27.0001 1249.5 145C1377.1 239.4 1445 411.833 1464 499"/>
-          <text className="text-7xl">
-            {[...Array(10)].map((_, i) => {
+          <text className="text-8xl">
+            {[...Array(7)].map((_, i) => {
               return <textPath key={i} ref={ref => paths.current[i] = ref} style={{fill: getRandomColor()}} href="#curve">projects</textPath>
             })}
           </text>
@@ -47,7 +47,7 @@ export default function Projects() {
       </div>
       
       <Carousel className="w-[85%] max-w-[800px] z-[30]">
-        <CarouselPrevious className="bg-[#fefefe]/90"/>
+        <CarouselPrevious />
 
         <CarouselContent>
           {projectsConfig.map((project, i) => (
@@ -58,13 +58,13 @@ export default function Projects() {
 
               <div className="flex w-full flex flex-col">
                 <div className="flex items-center justify-center text-center border-b">
-                  <CardHeader className="bg-[#fefefe]">
-                  <CardTitle className="text-xl text-balance">{project.title}</CardTitle>
+                  <CardHeader className="bg-[#fefefe] w-full">
+                  <CardTitle className="text-xl text-balance ">{project.title}</CardTitle>
                   <div>{project.tech}</div>
                   </CardHeader>
                 </div>
                 
-                <ScrollArea className="flex overflow-auto p-3 rounded-lg">
+                <ScrollArea className="relative flex overflow-auto p-3 rounded-lg">
                   <CardContent>
                     <ul className="list-disc text-start text-pretty">
                     {project.description.map((item, i) => (

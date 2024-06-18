@@ -1,5 +1,5 @@
 import './App.css'
-import { useState, useEffect } from 'react';
+import { Toaster } from "@/components/ui/toaster"
 import { useMediaQuery } from 'react-responsive';
 import ScrollButton from "/src/components/scroll-button"
 import FullNav from "/src/components/full-nav"
@@ -12,13 +12,6 @@ import { Separator } from "@/components/ui/separator"
 
 function App() {
   const isMobile = useMediaQuery({ maxWidth: 768 });
-  
-  useEffect( () => {
-    (async () => {
-      const LocomotiveScroll = (await import('locomotive-scroll')).default
-      const locomotiveScroll = new LocomotiveScroll();
-    })()
-  }, [])
 
   return (
     <>
@@ -38,6 +31,7 @@ function App() {
         <Contact />
       </main>
 
+      <Toaster />
     </>
   );
 }

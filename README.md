@@ -1,7 +1,6 @@
 # My personal portfolio website
 
 To-do:
-- add support for emailjs contact form
 - click to expand photo in projects section
 - add snap-scroll down button
 - improve general performance

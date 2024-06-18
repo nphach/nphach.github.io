@@ -28,13 +28,13 @@ export default function About() {
 
     const Phrase = ({ color }) => (
       <div className='px-5 flex gap-5 items-center'>
-        <div style={{ transform: `translateX(${offset})`, color }} className='text-6xl leading-normal opacity-[90%]'>{aboutConfig.emoji}</div>
+        <div style={{ transform: `translateX(${offset})`, color }} className='text-8xl leading-normal opacity-[90%]'>{aboutConfig.emoji}</div>
       </div>
     );
   
     return (
       <motion.div style={{ translateX }} className="flex whitespace-nowrap">
-        {[...Array(8)].map((_, i) => (
+        {[...Array(5)].map((_, i) => (
           <Phrase key={i} color={getRandomColor()} />
         ))}
       </motion.div>
@@ -49,18 +49,17 @@ export default function About() {
 
   return (
     <>
-    <section id="about" className="relative p-6 flex gap-6 justify-center items-center w-screen h-screen">
+    <section id="about" className="relative p-6 flex gap-6 justify-center items-center w-screen h-screen overflow-hidden">
       <div className="absolute inset-0 overflow-hidden z-[10]" ref={container}>
         <div className="absolute top-1/2 left-0 w-full transform -translate-y-1/2">
           <Slide offset={"-40%"} direction={'left'} progress={scrollYProgress}/>
           <Slide offset={"-25%"} direction={'right'} progress={scrollYProgress}/>
-          <Slide offset={"-75%"} direction={'left'} progress={scrollYProgress}/>
-          <Slide offset={"-05%"} direction={'right'} progress={scrollYProgress}/>
+          <Slide offset={"-70%"} direction={'left'} progress={scrollYProgress}/>
         </div>
       </div>
 
-      <Card className="w-[82dvh] h-[68dvh] min-h-[325px] min-w-[300px]  z-[20]">
-        <CardTitle className="flex text-3xl p-1 h-[20%] justify-center items-center">about me</CardTitle>
+      <Card className="w-[82dvh] h-[68dvh] min-h-[325px] min-w-[300px] z-[20] bg-[#fefefe]/60 backdrop-blur-[2px]">
+        <CardTitle className="flex text-3xl p-1 h-[20%] justify-center items-center bg-[#fefefe]">about me</CardTitle>
         <Separator/>
         <ScrollArea className="h-[80%] overflow-auto p-3 gap-4">
           <CardDescription className="flex h-4/5 flex-col justify-center items-center text-md p-4 gap-2 text-balance">
@@ -76,9 +75,9 @@ export default function About() {
             <div>{aboutConfig.currently}</div>
           </CardDescription>
           <CardContent className="p-3 h-full text-start">
-            {aboutConfig.text.map((item, i) =>
-              <div key={i} className="text-md text-pretty indent-10 pb-3 leading-relaxed">{item}</div>
-            )}
+            {aboutConfig.text.map((item, i) => (
+              <p key={i} className="text-md text-pretty indent-10 pb-3 leading-relaxed">{item}</p>
+            ))}
           </CardContent>
         </ScrollArea>
       </Card>
