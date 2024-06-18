@@ -1,11 +1,11 @@
-My personal portfolio
+# My personal portfolio website
 
 To-do:
-- add about me section
-- add projects section
-- add contact me section
-- switch out header image for cool AI image
+- click to expand photo in projects section
+- add snap-scroll down button
+- improve general performance
 
-Bugs/ issues:
-- expanded drop-down menu is transparent when not scrolled (make a state for expanded)
-- drop down links are centered, social buttons are right alligned
+Other ideas:
+- animate background for contact section
+- animate about-me icon
+
