@@ -1,10 +1,11 @@
-# My personal portfolio
+# My personal portfolio website
 
 To-do:
-- add header
-- add about me section
-- add projects section
-- add contact me section
+- click to expand photo in projects section
+- add snap-scroll down button
+- improve general performance
 
-Bugs/ issues:
-- links should collapse to dropdown menu for smaller screens
+Other ideas:
+- animate background for contact section
+- animate about-me icon
+

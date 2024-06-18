@@ -1,20 +1,39 @@
 import { Button } from "@/components/ui/button"
 import {
-    NavigationMenu,
-    NavigationMenuItem,
-    NavigationMenuList,
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuList,
 } from "@/components/ui/navigation-menu"
 import {
   Sheet,
   SheetClose,
   SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
-import { FaBars, FaGithub, FaLinkedin } from "react-icons/fa"
+import { FaBars } from "react-icons/fa"
+import { siteConfig } from "@/config/site"
+
+function MainNav() {
+  return (
+    <>
+      {siteConfig.mainNav.map((item, i) => (
+        <SheetClose key={i}><><Button variant="link"><a href={item.href}>{item.title}</a></Button></></SheetClose>
+      ))}
+    </>
+  )
+}
+  
+function SocialLinks() {
+  return (
+    <>
+      {siteConfig.links.map((item, i) => (
+        <div key={i}><Button variant="ghost">
+          <a href={item.href}><item.icon /></a>
+        </Button></div>
+      ))}
+    </>
+  )
+}
 
 export default function MobileNav() {
   return (
@@ -23,22 +42,14 @@ export default function MobileNav() {
         <NavigationMenuItem>
           <Sheet>
             <SheetTrigger><FaBars /></SheetTrigger>
-              <SheetContent>
-                <div className="flex flex-col space-y-4 m-10">
-                  <SheetClose><Button variant="link"><a href="#home">home</a></Button></SheetClose>
-                  <SheetClose><Button variant="link"><a href="#about">about</a></Button></SheetClose>
-                  <SheetClose><Button variant="link"><a href="#projects">projects</a></Button></SheetClose>
-                  <SheetClose><Button variant="link"><a href="#contact">contact</a></Button></SheetClose>
-                  <div className="flex justify-center space-x-4">
-                    <Button variant="ghost">
-                        <a href="https://github.com/nphach"><FaGithub /></a>
-                    </Button>
-                    <Button variant="ghost">
-                        <a href="https://linkedin.com/in/nphach"><FaLinkedin /></a>
-                    </Button>
-                  </div>
+            <SheetContent className="w-[250px] z-[100]">
+              <div className="flex flex-col space-y-4 m-10">
+                <MainNav />
+                <div className="flex justify-center space-x-4">
+                  <SocialLinks />
                 </div>
-              </SheetContent>
+              </div>
+            </SheetContent>
           </Sheet>
         </NavigationMenuItem>
       </NavigationMenuList>
