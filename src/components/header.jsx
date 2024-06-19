@@ -1,5 +1,3 @@
-"use client"
-
 import Portrait from '../assets/me.png';
 import { useRef, useEffect } from 'react';
 

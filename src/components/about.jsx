@@ -1,5 +1,3 @@
-"use client"
-
 import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card"
 import { aboutConfig } from "@/config/about"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -60,7 +58,7 @@ export default function About() {
         </div>
       </div>
 
-      <Card className="w-[82dvh] h-[68dvh] min-h-[325px] min-w-[300px] z-[20] bg-[#fefefe]/60 backdrop-blur-[2px]">
+      <Card className="w-[82dvh] h-[75dvh] min-h-[325px] min-w-[300px] z-[20] bg-[#fefefe]/60 backdrop-blur-[2px]">
         <CardTitle className="flex text-3xl p-1 h-[20%] justify-center items-center bg-[#fefefe]">about me</CardTitle>
         <Separator/>
         <ScrollArea className="h-[80%] overflow-auto p-3 gap-4">

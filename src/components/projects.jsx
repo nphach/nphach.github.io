@@ -1,5 +1,3 @@
-"use client"
-
 import { Card, CardTitle, CardFooter, CardContent, CardHeader } from "@/components/ui/card"
 import {
   Carousel,
