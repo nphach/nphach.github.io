@@ -1,3 +1,5 @@
+"use client"
+
 import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card"
 import { aboutConfig } from "@/config/about"
 import { ScrollArea } from "@/components/ui/scroll-area"

@@ -33,7 +33,7 @@ export const projectsConfig = [
         "responsive front-end adapts component appearance on mobile screens",
         "quirk: you're looking at it"
     ],
-    href: "https://github.com/nphach/portfolio"
+    href: "https://github.com/nphach/nphach.github.io"
   },
   {
     title: "AI Gesture Recognition for Naval Operations",
