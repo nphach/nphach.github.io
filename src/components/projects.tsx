@@ -1,15 +1,4 @@
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card"
-import { useMediaQuery } from "react-responsive";
-
 function Projects() {
-    const isMobile = useMediaQuery({ maxWidth: 768 })
 
     return (
         <section id="projects" className="bg-gradient-to-b from-[#D7EFE5] to-[#B7E1F5] h-full w-full flex flex-col">
