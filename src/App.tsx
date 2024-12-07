@@ -11,8 +11,6 @@ function App() {
     <NavBar/>
     <div className="pt-12 h-screen w-screen overflow-x-hidden">
       <Hero />
-      <About />
-      <Projects />
       <Contact />
     </div>
     </>
