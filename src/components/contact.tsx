@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import emailjs from "@emailjs/browser"
+import emailjs, { init } from "@emailjs/browser"
 
 import {
     Form,
@@ -27,6 +27,7 @@ const formSchema = z.object({
 })
 
 function Contact() {
+    init("nZSIGURAm9zGepcVo");
     const { toast } = useToast()
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -42,11 +43,7 @@ function Contact() {
         emailjs.send(
             "service_14r6c6h",
             "template_qgefkqb",
-            {
-                userName: values.name,
-                userEmail: values.email,
-                emailBody: values.message
-            },
+            values,
             "nZSIGURAm9zGepcVo"
         ).then(
             () => {
@@ -54,7 +51,8 @@ function Contact() {
                     title: 'Success!',
                     description: 'Your message has been sent.',
                 });
-            }, () => {
+            },
+            () => {
                 toast({
                     title: 'Error',
                     description: 'There was an error sending your message. Please try again.'
