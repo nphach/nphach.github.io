@@ -44,19 +44,23 @@ function Hero() {
     }, [isMobile])
 
     return (
-        <section id="home" className="bg-gradient-to-b from-[#D3DAE9] to-white h-full max-h-[960px] w-full flex justify-center">
-            <div className="h-full w-full max-w-[1200px] flex justify-center">
-                <div className="h-full flex flex-grow flex-col basis-1/2 px-20 py-20 items-start justify-end">
-                    <p className="text-9xl text-black font-kosugi font-semibold tracking-wide py-6">
+        <section id="home" className="h-full w-full bg-gradient-to-b from-[#D3DAE9] to-[#FFFFFF] max-h-[960px] flex justify-center">
+            <div className="h-full w-full max-w-[1200px] p-10 flex items-center justify-evenly md:items-end md:px-20 md:py-5">
+                {/* text */}
+                <div className="flex flex-col gap-4 md:basis-1/2 pr-10 md:py-20">
+                    <p className="text-9xl text-black font-kosugi font-semibold tracking-wide">
                         Nikki<br />Phach
                     </p>
+
                     <div className="flex items-center">
                         <p className="text-7xl font-bold text-accent pr-5 font-kosugi">*</p>
                         <p className="text-2xl tracking-wide">programmer, web developer, engineer</p>
                     </div>
                 </div>
+
+                {/* mobile */}
                 {!isMobile &&
-                    <div className="basis-1/2 py-5 pr-5">
+                    <div className="basis-1/2 h-full w-full">
                         <div ref={containerRef} className="bg-zinc-900 basis-1/2 h-full relative overflow-hidden rounded">
                             <img ref={imgRef} src={Portrait} draggable="false" className="h-[350px] w-auto absolute -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2" />
                         </div>
