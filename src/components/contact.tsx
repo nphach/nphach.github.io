@@ -62,7 +62,7 @@ function Contact() {
 
     return (
         <section id="contact" className="h-full w-full">
-            <div className="bg-gradient-to-b from-[#FFFFFF] to-[#D2D2F4] h-[70%] w-full flex justify-center">
+            <div className="bg-gradient-to-b from-[#D7EFE5] to-[#D2D2F4] h-[70%] w-full flex justify-center">
                 <div className="h-full w-full max-w-[1200px] flex flex-col justify-evenly items-start py-2 px-10 gap-5 md:flex-row md:px-20">
                     {/* contact */}
                     <div className="flex items-end font-kosugi md:basis-1/2 md:h-full md:pb-20">
@@ -105,7 +105,7 @@ function Contact() {
                                         <FormLabel>Message</FormLabel>
                                         <FormControl>
                                             <Textarea
-                                                placeholder="Hello world!"
+                                                placeholder="Type your message here."
                                                 className="min-h-[100px] md:min-h-[120px]"
                                                 {...field}
                                                 autoComplete="off"
