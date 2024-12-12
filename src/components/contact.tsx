@@ -61,11 +61,11 @@ function Contact() {
     }
 
     return (
-        <section id="contact" className="h-full w-full">
+        <section id="contact" className="h-full w-full max-h-[960px]">
             <div className="bg-gradient-to-b from-[#D7EFE5] to-[#D2D2F4] h-[70%] w-full flex justify-center">
                 <div className="h-full w-full max-w-[1200px] flex flex-col justify-evenly items-start py-2 px-10 gap-5 md:flex-row md:px-20">
                     {/* contact */}
-                    <div className="flex items-end font-kosugi md:basis-1/2 md:h-full md:pb-20">
+                    <div className="flex items-center font-kosugi md:basis-1/2 md:h-full">
                         <p className="text-7xl font-bold text-accent pr-5">*</p>
                         <p className="text-5xl md:text-6xl font-black tracking-wide">contact</p>
                     </div>

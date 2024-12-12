@@ -1,6 +1,6 @@
 import { useMediaQuery } from "react-responsive";
 import { useRef, useEffect } from "react";
-import Portrait from '../assets/me.png';
+import Portrait from '../assets/cursor.png';
 
 function Hero() {
     const isMobile = useMediaQuery({ maxWidth: 768 })
