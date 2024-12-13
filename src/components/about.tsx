@@ -10,9 +10,7 @@ function About() {
 
     return (
         <section id="about" className="md:max-h-[960px] h-fit w-full bg-gradient-to-b from-[#FFFFFF] to-[#D7EFE5] flex justify-center items-center">
-            <div className="min-h-full max-w-[1200px] py-20 px-10 flex flex-col gap-5 md:px-20 md:pt-10 md:pb-20">
-                <p className="text-7xl font-bold text-accent font-kosugi self-end">*</p>
-
+            <div className="min-h-full max-w-[1200px] py-5 px-10 flex flex-col gap-5 md:px-20">
                 <Card>
                     <CardHeader>
                         <CardTitle className="text-3xl font-kosugi tracking-wide font-bold">&gt; hello world!</CardTitle>

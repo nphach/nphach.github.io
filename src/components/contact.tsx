@@ -62,7 +62,7 @@ function Contact() {
 
     return (
         <section id="contact" className="h-full w-full max-h-[960px]">
-            <div className="bg-gradient-to-b from-[#D7EFE5] to-[#D2D2F4] h-[70%] w-full flex justify-center">
+            <div className="bg-gradient-to-b from-[#B7E1F5] to-[#D2D2F4] h-[70%] w-full flex justify-center">
                 <div className="h-full w-full max-w-[1200px] flex flex-col justify-evenly items-start py-2 px-10 gap-5 md:flex-row md:px-20">
                     {/* contact */}
                     <div className="flex items-center font-kosugi md:basis-1/2 md:h-full">

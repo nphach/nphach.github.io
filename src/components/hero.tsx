@@ -44,11 +44,11 @@ function Hero() {
     }, [isMobile])
 
     return (
-        <section id="home" className="h-full w-full bg-gradient-to-b from-[#D3DAE9] to-[#FFFFFF] max-h-[960px] flex justify-center">
-            <div className="h-full w-full max-w-[1200px] p-10 flex items-center justify-evenly md:items-end md:px-20 md:py-5">
+        <section id="home" className="h-[80%] w-full bg-gradient-to-b from-[#D3DAE9] to-[#FFFFFF] max-h-[960px] flex justify-center">
+            <div className="h-full w-full max-w-[1200px] p-5 flex items-center justify-evenly md:items-end md:px-20">
                 {/* text */}
                 <div className="flex flex-col gap-4 md:basis-1/2 pr-10 md:py-20">
-                    <p className="text-9xl text-black font-kosugi font-semibold tracking-wide">
+                    <p className="text-8xl md:text-9xl text-black font-kosugi font-semibold tracking-wide">
                         Nikki<br />Phach
                     </p>
 
