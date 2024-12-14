@@ -33,7 +33,7 @@ export const projectsConfig = [
     info: [
       "Huffman Compression: implemented a MinHeap to construct binary codes based on character frequency of input file and outputs compressed file accordingly",
       "Hamming Encoding and Decoding: developed RAID-2 encoding and decoding of based on Hamming(7,4) code, decoding algorithm able to fix up to one corrupted bit per nibble",
-      "Memory Debugging Monitor Replication: wrote precise read/ write operations for a simulated embedded system, cross-compiling cor memory protection analysis on Linux and SAPCC environments"
+      "Memory Debugging Monitor Replication: wrote precise read/ write operations for a simulated embedded system, cross-compiling for memory protection analysis on Linux and SAPCC environments"
     ],
     href: false
   },
