@@ -17,5 +17,5 @@ export const aboutConfig = {
             completed: "2024"
         }
     ],
-    skills: ["Python", "JavaScript/ Typescript", "Java", "C", "Racket", "LaTeX", "SQL", "Database Design", "React", "HTML", "CSS", "Machine Learning", "Git", "Unit Testing"]
+    skills: ["Python", "JavaScript/ Typescript", "Java", "C", "Racket", "LaTeX", "SQL", "Database Design", "React", "HTML", "CSS", "Machine Learning", "Git", "Unit Testing", "Web Scraping", "Data Processing/ Visualization", "APIs"]
 }

@@ -1,61 +1,74 @@
+import imageAnalysis from '../assets/projects/imageanal.jpg'
+import lr from '../assets/projects/lr.png'
+
 export const projectsConfig = [
-    {
-      title: "Resume and Cover Letter",
-      tech: "LaTeX",
-      image: "/assets/resume.jpg",
-      description: [
-        "personal resume and cover letter using LaTeX typesetting",
-        "includes Education, Projects and Work Experience sections with relevant subsections",
-        "hosted on Github with the corresponding compiled pdf",
-        "quirk: the accent color is Boston Blue!"
-      ],
-      href: "https://github.com/nphach/resume"
-    },
-    {
-      title: "Image Analysis: Skin Detection",
-      tech: "Python, matplotlib, numpy, OpenCV, TensorFlow",
-      image: "/assets/image-analysis.jpg",
-      description: [
-        "collaborated within a team for my capstone course to develop a skin detection tool for dermatological applications",
-        "enhanced existing algorithm by refactoring code for improved readability and ease of use",
-        "added support for asyncronous image processing for decreased runtime",
-        "constructed a ground truth data set and implemented a Metrics class to calculate algorithm performance",
-        "final results yielded a skin detection accuracy of ~98% over set of 1000 photos"
-      ],
-      href: false
-    },
-    {
-      title: "Personal Portfilio Website",
-      tech: "JavaScript, React, shadcn, HTML, Tailwind CSS",
-      image: "/assets/inception.png",
-      description: [
-          "personal portfolio displaying personal information and experience",
-          "responsive front-end adapts component appearance on mobile screens",
-          "quirk: you're looking at it"
-      ],
-      href: "https://github.com/nphach/nphach.github.io"
-    },
-    {
-      title: "AI Gesture Recognition for Naval Operations",
-      tech: "Python, numpy, pandas, scikit-learn",
-      description: [
-        "developed a gesture recognition system in Python to classify naval airplane handling signals, hosted on Google Colab for team collaboration",
-        "used pandas and numpy for data preprocessing and KMeans custering to generate insight of gesture data",
-        "displayed various models’ performance with ROC-AUC scores and confusion matrices, achieving second place in class presentation"
-      ],
-      image: "/assets/classification.jpg",
-      href: false
-    },
-    {
-      title: "Concepts in Operating Systems and Computer Architechture",
-      tech: "C, VMWare, Assembly, getopt.h, Makefile",
-      image: "",
-      description: [
-        "various coursework related to operating systems, embedded systems, computer architecture and organization",
-        "Huffman Compression: implemented a MinHeap to construct binary codes based on character frequency of input file and outputs compressed file accordingly",
-        "Hamming Encoding and Decoding: developed RAID-2 encoding and decoding of based on Hamming(7,4) code, decoding algorithm able to fix up to one corrupted bit per nibble",
-        "Memory Debugging Monitor Replication: wrote precise read/ write operations for a simulated embedded system, cross-compiling cor memory protection analysis on Linux and SAPCC environments"
-      ],
-      href: false
-    }
-  ]
+  {
+    title: "currently working on: Kotoba Tag!",
+    image: false,
+    description: "A Japanese word game for language learning, based on shiritori",
+    info: [
+      "wrote a Python scraper to build a Japanese vocab dataset of >5000 words and >7000 definitions",
+      "organized data in a Turso database with a structured schema modeling vocab-definition relationship",
+      "defined a state machine for gameplay using XState",
+      "developed syllable-matching logic in Typescript according to game rules with Vitest unit tests"
+    ],
+    href: "https://github.com/nphach/kotoba-tag"
+  },
+  {
+    title: "Image Analysis: Skin Detection",
+    image: imageAnalysis,
+    description: "an skin detection tool intended for dermatological applications, studying bias in AI applications",
+    info: [
+      "conducted research in color analysis for skin detection, color spaces and techniques in dynamic thresholding",
+      "enhanced existing Python algorithm by refactoring for improved readability, ease of use and relevance; implemented asyncronous image processing for decreased runtime",
+      "contributed to a dataset of skin-mask images used for testing",
+      "created Metrics class to calculate algorithm performace, yielding a skin detection accuracy of ~98% on >1000 photos"
+    ],
+    href: "https://github.com/jawshipai/imageanal"
+  },
+  {
+    title: "Concepts in Operating Systems and Computer Architecture",
+    image: false,
+    description: "coursework related to operating systems, embedded systems, computer architecture and organization",
+    info: [
+      "Huffman Compression: implemented a MinHeap to construct binary codes based on character frequency of input file and outputs compressed file accordingly",
+      "Hamming Encoding and Decoding: developed RAID-2 encoding and decoding of based on Hamming(7,4) code, decoding algorithm able to fix up to one corrupted bit per nibble",
+      "Memory Debugging Monitor Replication: wrote precise read/ write operations for a simulated embedded system, cross-compiling cor memory protection analysis on Linux and SAPCC environments"
+    ],
+    href: false
+  },
+  {
+    title: "nphach.github.io",
+    image: false,
+    description: "my personal webpage and portfolio",
+    info: [
+      "website written in TypeScript and hosted on GitHub pages",
+      "implemented responsive design using Tailwind CSS and HTML",
+      "used React hooks to create cursor-trailing animation in hero",
+      "created contact form with zod validation and EmailJS API"
+    ],
+    href: "https://github.com/nphach/nphach.github.io"
+  },
+  {
+    title: "AI Gesture Recognition for Naval Operations",
+    image: lr,
+    description: "a collaborative analysis of classification of naval airplane handling signals",
+    info: [
+      "used pandas and numpy libraries to preprocess hand coordinate data",
+      "applied clustering algorithm to generate features for data classification",
+      "compared and presented performance of various classification models in a collaborative Jupyter notebook"
+    ],
+    href: false
+  },
+  {
+    title: "Resume",
+    image: false,
+    description: "a professional resume detailing education, background and skills",
+    info: [
+      "created a resume, typeset and stylized using LaTeX",
+      "hosted on Github with corresponding compiled pdf",
+      "quirk: the accent color is Boston Blue!"
+    ],
+    href: "https://github.com/nphach/resume"
+  }
+]

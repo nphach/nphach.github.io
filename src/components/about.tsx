@@ -10,12 +10,12 @@ function About() {
 
     return (
         <section id="about" className="md:max-h-[960px] h-fit w-full bg-gradient-to-b from-[#FFFFFF] to-[#D7EFE5] flex justify-center items-center">
-            <div className="min-h-full max-w-[1200px] py-5 px-10 flex flex-col gap-5 md:px-20">
+            <div className="h-full w-full max-w-[1200px] py-5 px-10 flex flex-col gap-5 md:px-20">
                 <Card>
                     <CardHeader>
                         <CardTitle className="text-3xl font-kosugi tracking-wide font-bold">&gt; hello world!</CardTitle>
                     </CardHeader>
-                    <CardContent className="flex flex-col gap-2 max-h-[420px] overflow-y-scroll">
+                    <CardContent className="flex flex-col gap-2 max-h-[420px] overflow-y-auto">
                         {aboutConfig.info.map((item, i) => (
                             <p key={i} className="text-pretty text-sm">{item}</p>
                         ))}

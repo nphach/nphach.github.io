@@ -61,13 +61,13 @@ function Contact() {
     }
 
     return (
-        <section id="contact" className="h-full w-full max-h-[960px]">
-            <div className="bg-gradient-to-b from-[#B7E1F5] to-[#D2D2F4] h-[70%] w-full flex justify-center">
-                <div className="h-full w-full max-w-[1200px] flex flex-col justify-evenly items-start py-2 px-10 gap-5 md:flex-row md:px-20">
+        <section id="contact" className="h-full w-full max-h-[960px] bg-gradient-to-b from-[#B7E1F5] to-[#E6DDFA]">
+            <div className="h-[70%] w-full flex justify-center">
+                <div className="h-full w-full max-w-[1200px] flex flex-col justify-evenly items-start py-5 px-10 gap-5 md:flex-row md:px-20">
                     {/* contact */}
                     <div className="flex items-center font-kosugi md:basis-1/2 md:h-full">
                         <p className="text-7xl font-bold text-accent pr-5">*</p>
-                        <p className="text-5xl md:text-6xl font-black tracking-wide">contact</p>
+                        <p className="text-4xl md:text-6xl font-black tracking-wide">contact</p>
                     </div>
 
                     {/* form */}
@@ -126,12 +126,12 @@ function Contact() {
                 <div className="h-full w-full max-w-[1200px] flex flex-col justify-evenly p-10 gap-3 md:flex-row md:justify-between md:p-20 md:items-center">
                     <div className="flex flex-col items-start font-kosugi text-xl">
                         <p className="font-bold text-accent">email</p>
-                        <p className="text-[#D2D2F4] tracking-wide">
+                        <p className="text-[#E6DDFA] tracking-wide">
                             <a href="mailto:nikkiphach@gmail.com">nikkiphach@gmail.com</a>
                         </p>
                     </div>
 
-                    <div className="flex font-kosugi gap-x-3 text-4xl text-[#D2D2F4]">
+                    <div className="flex font-kosugi gap-x-3 text-4xl text-[#E6DDFA]">
                         <a href="https://github.com/nphach/"><FaGithub /></a>
                         <a href="https://www.linkedin.com/in/nphach/"><FaLinkedin /></a>
                     </div>
