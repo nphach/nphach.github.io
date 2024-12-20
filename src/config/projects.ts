@@ -8,9 +8,10 @@ export const projectsConfig = [
     description: "A Japanese word game for language learning, based on shiritori",
     info: [
       "wrote a Python scraper to build a Japanese vocab dataset of >5000 words and >7000 definitions",
+      "developed syllable-matching logic in Typescript according to game rules with Vitest unit tests",
       "organized data in a Turso database with a structured schema modeling vocab-definition relationship",
-      "defined a state machine for gameplay using XState",
-      "developed syllable-matching logic in Typescript according to game rules with Vitest unit tests"
+      "used XState to define a state machine that models gameplay logic and manage game states",
+      "created a responsive React UI with timer, text input, and word history"
     ],
     href: "https://github.com/nphach/kotoba-tag"
   },
