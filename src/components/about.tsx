@@ -23,7 +23,7 @@ function About() {
                 </Card>
 
                 <div className="flex flex-col md:flex-row gap-5">
-                    <Card className="md:flex-[2] flex flex-col">
+                    <Card className="md:flex-[1] flex flex-col">
                         <CardHeader>
                             <CardTitle className="text-xl font-kosugi tracking-wide font-bold">&gt; education</CardTitle>
                         </CardHeader>
@@ -37,7 +37,7 @@ function About() {
                         </CardContent>
                     </Card>
 
-                    <Card className="md:flex-1 flex flex-col">
+                    <Card className="md:flex-[2] flex flex-col">
                         <CardHeader>
                             <CardTitle className="text-xl font-kosugi tracking-wide font-bold">&gt; skills</CardTitle>
                         </CardHeader>

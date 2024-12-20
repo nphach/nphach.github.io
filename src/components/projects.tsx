@@ -11,7 +11,7 @@ import {
 function Projects() {
 
     return (
-        <section id="projects" className="h-fit w-full bg-gradient-to-b from-[#D7EFE5] to-[#B7E1F5] flex justify-center">
+        <section id="projects" className="pt-5 md:pt-12 w-full bg-gradient-to-b from-[#D7EFE5] to-[#B7E1F5] flex justify-center">
             <div className="w-full max-w-[1200px] py-5 px-10 flex flex-col gap-5 md:px-20 justify-end">
                 <div className="flex items-center font-kosugi self-end">
                     <p className="text-4xl md:text-6xl font-black tracking-wide">projects</p>

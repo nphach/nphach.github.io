@@ -61,9 +61,9 @@ function Contact() {
     }
 
     return (
-        <section id="contact" className="h-full w-full max-h-[960px] bg-gradient-to-b from-[#B7E1F5] to-[#E6DDFA]">
-            <div className="h-[70%] w-full flex justify-center">
-                <div className="h-full w-full max-w-[1200px] flex flex-col justify-evenly items-start py-5 px-10 gap-5 md:flex-row md:px-20">
+        <section id="contact" className="min-h-full pt-5 w-full max-h-[960px] bg-gradient-to-b from-[#B7E1F5] to-[#E6DDFA] flex flex-col">
+            <div className="min-h-[70%] w-full flex justify-center">
+                <div className="w-full max-w-[1200px] flex flex-col justify-evenly items-start py-5 px-10 gap-5 md:flex-row md:px-20">
                     {/* contact */}
                     <div className="flex items-center font-kosugi md:basis-1/2 md:h-full">
                         <p className="text-7xl font-bold text-accent pr-5">*</p>
@@ -72,7 +72,7 @@ function Contact() {
 
                     {/* form */}
                     <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full basis-1/2 space-y-4 md:flex-col md:self-center">
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="py-5 w-full basis-1/2 space-y-4 md:flex-col md:self-center">
                             <FormField
                                 control={form.control}
                                 name="name"
@@ -122,7 +122,7 @@ function Contact() {
             </div>
 
             {/* footer */}
-            <div className="bg-black h-[30%] flex justify-center">
+            <div className="bg-black min-h-[30%] flex justify-center grow">
                 <div className="h-full w-full max-w-[1200px] flex flex-col justify-evenly p-10 gap-3 md:flex-row md:justify-between md:p-20 md:items-center">
                     <div className="flex flex-col items-start font-kosugi text-xl">
                         <p className="font-bold text-accent">email</p>
