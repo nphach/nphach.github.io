@@ -5,7 +5,7 @@ export const projectsConfig = [
   {
     title: "currently working on: Kotoba Tag!",
     image: false,
-    description: "A Japanese word game for language learning, based on shiritori",
+    description: "a word game for Japanese language learning, based on shiritori",
     info: [
       "wrote a Python scraper to build a Japanese vocab dataset of >5000 words and >7000 definitions",
       "developed syllable-matching logic in Typescript according to game rules with Vitest unit tests",

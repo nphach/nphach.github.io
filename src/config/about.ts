@@ -17,5 +17,13 @@ export const aboutConfig = {
             completed: "2024"
         }
     ],
-    skills: ["Python", "JavaScript/ Typescript", "Java", "C", "Racket", "LaTeX", "SQL", "Database Design", "React", "HTML", "CSS", "Machine Learning", "Git", "Unit Testing", "Web Scraping", "Data Processing/ Visualization", "APIs", "npm", "XState", "Docker", "Agile Methodologies", "Linux/ Unix"]
+    skills: [
+        "TypeScript", "Python", "React", "XState", "SQL", "TailwindCSS",
+        "@shadcn/ui", "Vitest", "Zod", "NumPy", "Scikit-learn", "Pandas",
+        "Responsive Web Design", "Docker", "npm", "HTML5", "CSS", "C",
+        "Machine Learning", "Computer Vision", "Natural Language Processing",
+        "Data Structures/ Algorithms", "Unit Testing", "Web Scraping",
+        "JavaScript", "Data Processing/ Visualization", "Git/ GitHub",
+        "Database Design", "Web Scraping", "APIs", "Racket", "LaTeX", "Java",
+        "Linux/ Unix", "Agile Methodologies"]
 }
