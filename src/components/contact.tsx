@@ -61,7 +61,7 @@ function Contact() {
     }
 
     return (
-        <section id="contact" className="min-h-full pt-5 w-full max-h-[960px] bg-gradient-to-b from-[#B7E1F5] to-[#E6DDFA] flex flex-col">
+        <section id="contact" className="min-h-full pt-5 w-full max-h-[960px] bg-gradient-to-b from-[#D3DAE9] to-[#FFFFFF] flex flex-col">
             <div className="min-h-[70%] w-full flex justify-center">
                 <div className="w-full max-w-[1200px] flex flex-col justify-evenly items-start py-5 px-10 gap-5 md:flex-row md:px-20">
                     {/* contact */}

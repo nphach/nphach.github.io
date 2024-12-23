@@ -61,7 +61,7 @@ function Hero() {
                 {/* mobile */}
                 {!isMobile &&
                     <div className="basis-1/2 h-full w-full">
-                        <div ref={containerRef} className="bg-zinc-900 basis-1/2 h-full relative overflow-hidden rounded">
+                        <div ref={containerRef} className="bg-zinc-900 basis-1/2 h-full relative overflow-hidden rounded-lg">
                             <img ref={imgRef} src={Portrait} draggable="false" className="h-[350px] w-auto absolute -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2" />
                         </div>
                     </div>}

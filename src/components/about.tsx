@@ -5,13 +5,18 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
+import { Timeline } from 'react-twitter-widgets'
+import Me from '../assets/noguchi.jpg';
 
 function About() {
 
-    return (
-        <section id="about" className="md:max-h-[960px] h-fit w-full bg-gradient-to-b from-[#FFFFFF] to-[#D7EFE5] flex justify-center items-center">
-            <div className="h-full w-full max-w-[1200px] py-5 px-10 flex flex-col gap-5 md:px-20">
-                <Card>
+    return (<>
+        {/* about */}
+        <section id="about" className="pt-5 md:pt-10 h-fit w-full bg-gradient-to-b from-[#FFFFFF] via-[#E2F3EE] to-[#DBF0FA] flex justify-center items-center">
+            <div className="h-full w-full max-w-[1200px] py-5 px-10 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 md:px-20">
+
+                {/* blurb */}
+                <Card className="col-span-1 md:col-span-2 xl:col-span-3">
                     <CardHeader>
                         <CardTitle className="text-3xl font-kosugi tracking-wide font-bold">&gt; hello world!</CardTitle>
                     </CardHeader>
@@ -22,33 +27,44 @@ function About() {
                     </CardContent>
                 </Card>
 
-                <div className="flex flex-col md:flex-row gap-5">
-                    <Card className="md:flex-[1] flex flex-col">
-                        <CardHeader>
-                            <CardTitle className="text-xl font-kosugi tracking-wide font-bold">&gt; education</CardTitle>
-                        </CardHeader>
-                        <CardContent className="flex flex-col gap-2">
-                            {aboutConfig.edu.map((item, i) => (
-                                <p key={i} className="lg:whitespace-nowrap text-sm">
-                                    <b>{item.school}</b> <br />
-                                    {item.focus}, <i>{item.completed}</i>
-                                </p>
-                            ))}
-                        </CardContent>
-                    </Card>
-
-                    <Card className="md:flex-[2] flex flex-col">
-                        <CardHeader>
-                            <CardTitle className="text-xl font-kosugi tracking-wide font-bold">&gt; skills</CardTitle>
-                        </CardHeader>
-                        <CardContent className="flex-grow text-pretty text-sm">
-                            {aboutConfig.skills.join(", ")}
-                        </CardContent>
-                    </Card>
+                {/* pic */}
+                <div className="col-span-1 bg-black rounded-lg">
+                    <img src={Me} className="object-cover h-full rounded-lg"/>
                 </div>
+
+                {/* tweets */}
+                <div className="col-span-1 xl:col-span-2">
+                    <Timeline dataSource={{ sourceType: "profile", screenName: "uqaaaqa" }} />
+                </div>
+
+                {/* education */}
+                <Card className="col-span-1">
+                    <CardHeader>
+                        <CardTitle className="text-xl font-kosugi tracking-wide font-bold">&gt; education</CardTitle>
+                    </CardHeader>
+                    <CardContent className="flex flex-col gap-2">
+                        {aboutConfig.edu.map((item, i) => (
+                            <p key={i} className="text-sm">
+                                <b>{item.school}</b> <br />
+                                {item.focus}, <i>{item.completed}</i>
+                            </p>
+                        ))}
+                    </CardContent>
+                </Card>
+
+                {/* skills */}
+                <Card className="col-span-1 xl:col-span-2">
+                    <CardHeader>
+                        <CardTitle className="text-xl font-kosugi tracking-wide font-bold">&gt; skills</CardTitle>
+                    </CardHeader>
+                    <CardContent className="flex-grow text-pretty text-sm">
+                        {aboutConfig.skills.join(", ")}
+                    </CardContent>
+                </Card>
             </div>
         </section>
-    )
+
+    </>)
 }
 
 export default About
