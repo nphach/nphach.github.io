@@ -28,17 +28,12 @@ function About() {
                 </Card>
 
                 {/* pic */}
-                <div className="col-span-1 bg-black rounded-lg">
+                <div className="col-span-1 row-span-2 bg-black rounded-lg">
                     <img src={Me} className="object-cover h-full rounded-lg"/>
                 </div>
 
-                {/* tweets */}
-                <div className="col-span-1 xl:col-span-2">
-                    <Timeline dataSource={{ sourceType: "profile", screenName: "uqaaaqa" }} />
-                </div>
-
                 {/* education */}
-                <Card className="col-span-1">
+                <Card className="col-span-1 xl:col-span-2">
                     <CardHeader>
                         <CardTitle className="text-xl font-kosugi tracking-wide font-bold">&gt; education</CardTitle>
                     </CardHeader>
