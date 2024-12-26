@@ -5,7 +5,6 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-import { Timeline } from 'react-twitter-widgets'
 import Me from '../assets/noguchi.jpg';
 
 function About() {
