@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Jacquard+12&display=swap");
+
 * {
   box-sizing: border-box;
 }
@@ -15,7 +17,7 @@ body {
   height: 100vh;
 }
 
-.body {
+.deviceLayer {
   position: absolute;
   inset: 0;
   z-index: 2;
@@ -23,33 +25,69 @@ body {
   align-items: center;
   justify-content: center;
   pointer-events: none;
-  mix-blend-mode: difference;
-  color: white;
+}
+
+.device {
+  --device-width: min(680px, 94vw, calc(94vh * 624 / 731));
+  --screen-x: calc(var(--device-width) * 190 / 624);
+  --screen-y: calc(var(--device-width) * 265 / 624);
+  --screen-width: calc(var(--device-width) * 265 / 624);
+  --screen-height: calc(var(--device-width) * 250 / 624);
+  position: relative;
+  width: var(--device-width);
+  aspect-ratio: 624 / 731;
+}
+
+.deviceBase {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
 }
 
 .content {
+  position: absolute;
+  top: var(--screen-y);
+  left: var(--screen-x);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2rem;
-  width: min(900px, 90vw);
+  justify-content: center;
+  gap: calc(var(--device-width) * 16 / 624);
+  width: var(--screen-width);
+  height: var(--screen-height);
+  padding: calc(var(--device-width) * 16 / 624);
+  overflow: hidden;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.16) 50%, rgba(0, 0, 0, 0.04) 50%),
+    #9cae76;
+  background-size: 100% calc(var(--device-width) * 4 / 624);
+  border: calc(var(--device-width) * 3 / 624) solid rgba(38, 48, 34, 0.55);
+  border-radius: calc(var(--device-width) * 10 / 624);
+  box-shadow:
+    inset 0 calc(var(--device-width) * 4 / 624)
+      calc(var(--device-width) * 12 / 624) rgba(255, 255, 255, 0.28),
+    inset 0 calc(var(--device-width) * -6 / 624)
+      calc(var(--device-width) * 14 / 624) rgba(32, 42, 30, 0.35);
+  color: #111;
   text-align: center;
 }
 
 .content p {
   margin: 0;
-  font-size: clamp(3rem, 9vw, 9rem);
-  line-height: 0.9;
+  font-family: "Jacquard 12", Arial, Helvetica, sans-serif;
+  font-size: calc(var(--device-width) * 48 / 624);
+  line-height: 1;
   font-weight: 700;
-  text-transform: uppercase;
 }
 
 .buttonRow {
   display: flex;
-  gap: 1rem;
+  flex-wrap: wrap;
+  gap: calc(var(--device-width) * 8 / 624);
   justify-content: center;
   pointer-events: auto;
-  mix-blend-mode: normal;
 }
 
 .buttonRow a {

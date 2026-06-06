@@ -34,33 +34,41 @@ function App() {
 
   return (
     <main className="appContainer">
-      <div className="body">
-        <div className="content">
-          <p>refresh in progress</p>
-          <div className="buttonRow">
-            <Button asChild variant="outline">
-              <a
-                href="https://github.com/nphach/"
-                target="_blank"
-                rel="noreferrer"
-              >
-                github
-              </a>
-            </Button>
+      <div className="deviceLayer">
+        <div className="device">
+          <img
+            className="deviceBase"
+            src="/assets/base/base.svg"
+            alt="Tamagotchi base"
+          />
 
-            <Button asChild variant="outline">
-              <a
-                href="https://www.linkedin.com/in/nphach/"
-                target="_blank"
-                rel="noreferrer"
-              >
-                linkedin
-              </a>
-            </Button>
+          <div className="content">
+            <p>refresh in progress</p>
+            <div className="buttonRow">
+              <Button asChild variant="outline">
+                <a
+                  href="https://github.com/nphach/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  github
+                </a>
+              </Button>
 
-            <Button asChild variant="outline">
-              <a href="mailto:nikkiphach@gmail.com">email</a>
-            </Button>
+              <Button asChild variant="outline">
+                <a
+                  href="https://www.linkedin.com/in/nphach/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  linkedin
+                </a>
+              </Button>
+
+              <Button asChild variant="outline">
+                <a href="mailto:nikkiphach@gmail.com">email</a>
+              </Button>
+            </div>
           </div>
         </div>
       </div>
