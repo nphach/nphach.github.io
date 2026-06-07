@@ -29,6 +29,8 @@ body {
 
 .device {
   --device-width: min(680px, 94vw, calc(94vh * 624 / 731));
+  --device-height: calc(var(--device-width) * 731 / 624);
+  --button-size: calc(var(--device-width) * 52 / 638);
   --screen-x: calc(var(--device-width) * 190 / 624);
   --screen-y: calc(var(--device-width) * 265 / 624);
   --screen-width: calc(var(--device-width) * 265 / 624);
@@ -40,16 +42,46 @@ body {
 
 .deviceBase {
   display: block;
+  position: relative;
+  z-index: 0;
   width: 100%;
   height: 100%;
   object-fit: contain;
   pointer-events: none;
 }
 
+.buttonArt {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  filter:
+    drop-shadow(0 0 calc(var(--device-width) * 3 / 624) rgba(238, 239, 242, 0.38))
+    drop-shadow(0 calc(var(--device-width) * 2 / 624) calc(var(--device-width) * 5 / 624) rgba(220, 232, 182, 0.2));
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.deviceHeader {
+  position: absolute;
+  top: calc(var(--device-width) * 54 / 624);
+  left: calc(var(--screen-x) + var(--screen-width) / 2);
+  z-index: 2;
+  width: calc(var(--device-width) * 440 / 624);
+  height: auto;
+  filter: brightness(1.18) contrast(1.08);
+  opacity: 0.96;
+  pointer-events: none;
+  transform: translateX(-50%) perspective(calc(var(--device-width) * 360 / 624))
+    rotateX(10deg);
+}
+
 .content {
   position: absolute;
   top: var(--screen-y);
   left: var(--screen-x);
+  z-index: 2;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -70,11 +102,23 @@ body {
       calc(var(--device-width) * 12 / 624) rgba(255, 255, 255, 0.28),
     inset 0 calc(var(--device-width) * -6 / 624)
       calc(var(--device-width) * 14 / 624) rgba(32, 42, 30, 0.35);
-  color: #111;
+  color: #1c211a;
+  pointer-events: auto;
   text-align: center;
 }
 
+.lcdTrail {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
 .content p {
+  position: relative;
+  z-index: 1;
   margin: 0;
   font-family: "Jacquard 12", Arial, Helvetica, sans-serif;
   font-size: calc(var(--device-width) * 48 / 624);
@@ -82,20 +126,75 @@ body {
   font-weight: 700;
 }
 
-.buttonRow {
-  display: flex;
-  flex-wrap: wrap;
-  gap: calc(var(--device-width) * 8 / 624);
-  justify-content: center;
-  pointer-events: auto;
+.physicalButtons {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
 }
 
-.buttonRow a {
+.physicalButton {
+  position: absolute;
+  width: var(--button-size);
+  height: var(--button-size);
+  border-radius: 999px;
+  color: white;
+  outline-offset: calc(var(--device-width) * 4 / 624);
+  pointer-events: auto;
   text-decoration: none;
-  text-transform: none;
+  transform: translate(-50%, -50%);
+}
+
+.physicalButton--left {
+  left: calc(var(--device-width) * 223.9 / 638);
+  top: calc(var(--device-height) * 634.6 / 751);
+}
+
+.physicalButton--middle {
+  left: calc(var(--device-width) * 325.8 / 638);
+  top: calc(var(--device-height) * 655.1 / 751);
+}
+
+.physicalButton--right {
+  left: calc(var(--device-width) * 423.4 / 638);
+  top: calc(var(--device-height) * 634.6 / 751);
+}
+
+.physicalButtonIcon {
+  position: absolute;
+  top: 82%;
+  left: 50%;
+  color: #eeeff2;
+  display: flex;
+  width: calc(var(--device-width) * 24 / 624);
+  height: calc(var(--device-width) * 24 / 624);
+  opacity: 0.78;
+  transform: translate(-50%, -50%);
+}
+
+.physicalButton--left .physicalButtonIcon {
+  top: 90%;
+}
+
+.physicalButton--right .physicalButtonIcon {
+  top: 88%;
+  left: 51%;
+}
+
+.physicalButtonIcon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.physicalButton:hover .physicalButtonIcon,
+.physicalButton:focus-visible .physicalButtonIcon {
+  color: #dce8b6;
+  opacity: 1;
 }
 
 .grid {
+  --grid-block-size: 5vw;
+
   position: fixed;
   inset: 0;
   display: flex;
@@ -103,12 +202,12 @@ body {
 }
 
 .column {
-  width: 5vw;
+  width: var(--grid-block-size);
   height: 100vh;
 }
 
 .block {
-  width: 5vw;
-  height: 5vw;
+  width: var(--grid-block-size);
+  height: var(--grid-block-size);
   transition: background-color 300ms ease;
 }
