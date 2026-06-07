@@ -15,6 +15,7 @@ body {
   position: relative;
   width: 100vw;
   height: 100vh;
+  height: 100dvh;
 }
 
 .deviceLayer {
@@ -29,6 +30,7 @@ body {
 
 .device {
   --device-width: min(680px, 94vw, calc(94vh * 624 / 731));
+  --device-width: min(680px, 94vw, calc(94dvh * 624 / 731));
   --device-height: calc(var(--device-width) * 731 / 624);
   --button-size: calc(var(--device-width) * 52 / 638);
   --screen-x: calc(var(--device-width) * 190 / 624);
@@ -78,6 +80,8 @@ body {
 }
 
 .content {
+  --lcd-columns: 32;
+  --lcd-rows: 30;
   position: absolute;
   top: var(--screen-y);
   left: var(--screen-x);
@@ -94,7 +98,7 @@ body {
   background:
     linear-gradient(rgba(255, 255, 255, 0.16) 50%, rgba(0, 0, 0, 0.04) 50%),
     #9cae76;
-  background-size: 100% calc(var(--device-width) * 4 / 624);
+  background-size: 100% calc(100% / var(--lcd-rows));
   border: calc(var(--device-width) * 3 / 624) solid rgba(38, 48, 34, 0.55);
   border-radius: calc(var(--device-width) * 10 / 624);
   box-shadow:
@@ -204,6 +208,7 @@ body {
 .column {
   width: var(--grid-block-size);
   height: 100vh;
+  height: 100dvh;
 }
 
 .block {

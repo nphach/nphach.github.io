@@ -10,8 +10,9 @@ import "./App.css";
 
 const GRID_BLOCK_SIZE_RATIO = 0.05;
 const GRID_COLOR = "38, 48, 34";
+const LCD_COLUMN_COUNT = 32;
+const LCD_ROW_COUNT = 30;
 const LCD_PIXEL_GAP_RATIO = 1 / 6;
-const LCD_PIXEL_SIZE_RATIO = GRID_BLOCK_SIZE_RATIO / 4;
 const LCD_TRAIL_FADE_MS = 720;
 const LCD_TRAIL_HOLD_MS = 80;
 const LCD_TRAIL_OPACITY = 0.78;
@@ -65,10 +66,14 @@ type LcdPixel = LcdPoint & {
 };
 
 type LcdDrawing = {
+  columns: number;
   context: CanvasRenderingContext2D;
+  gridOffsetX: number;
+  gridOffsetY: number;
   height: number;
   pixelGap: number;
   pixelSize: number;
+  rows: number;
   width: number;
 };
 
@@ -84,8 +89,8 @@ const GRID_COLUMNS = Array.from(
 );
 
 const getViewportSize = () => ({
-  height: window.innerHeight,
-  width: window.innerWidth,
+  height: window.visualViewport?.height ?? window.innerHeight,
+  width: window.visualViewport?.width ?? window.innerWidth,
 });
 
 const getGridBlockSize = (viewportWidth: number) =>
@@ -226,12 +231,21 @@ function App() {
 
     context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
 
-    const pixelSize = Math.max(window.innerWidth * LCD_PIXEL_SIZE_RATIO, 1);
+    const pixelSize = Math.min(
+      rect.width / LCD_COLUMN_COUNT,
+      rect.height / LCD_ROW_COUNT,
+    );
+    const gridOffsetX = (rect.width - pixelSize * LCD_COLUMN_COUNT) / 2;
+    const gridOffsetY = (rect.height - pixelSize * LCD_ROW_COUNT) / 2;
     const drawing = {
+      columns: LCD_COLUMN_COUNT,
       context,
+      gridOffsetX,
+      gridOffsetY,
       height: rect.height,
       pixelGap: pixelSize * LCD_PIXEL_GAP_RATIO,
       pixelSize,
+      rows: LCD_ROW_COUNT,
       width: rect.width,
     };
 
@@ -251,6 +265,8 @@ function App() {
 
     updateLcdMetrics();
     window.addEventListener("resize", onResize);
+    window.visualViewport?.addEventListener("resize", onResize);
+    window.visualViewport?.addEventListener("scroll", onResize);
 
     if (contentRef.current) {
       resizeObserver?.observe(contentRef.current);
@@ -258,6 +274,8 @@ function App() {
 
     return () => {
       window.removeEventListener("resize", onResize);
+      window.visualViewport?.removeEventListener("resize", onResize);
+      window.visualViewport?.removeEventListener("scroll", onResize);
       resizeObserver?.disconnect();
 
       if (lcdAnimationRef.current !== null) {
@@ -282,11 +300,26 @@ function App() {
   const addLcdPixel = (
     { x, y }: LcdPoint,
     updatedAt: number,
-    pixelSize: number,
+    drawing: LcdDrawing,
   ) => {
-    const pixelX = Math.floor(x / pixelSize) * pixelSize;
-    const pixelY = Math.floor(y / pixelSize) * pixelSize;
-    const key = `${pixelX}:${pixelY}`;
+    const { columns, gridOffsetX, gridOffsetY, pixelSize, rows } = drawing;
+    const localX = x - gridOffsetX;
+    const localY = y - gridOffsetY;
+
+    if (localX < 0 || localY < 0) {
+      return;
+    }
+
+    const column = Math.floor(localX / pixelSize);
+    const row = Math.floor(localY / pixelSize);
+
+    if (column >= columns || row >= rows) {
+      return;
+    }
+
+    const pixelX = gridOffsetX + column * pixelSize;
+    const pixelY = gridOffsetY + row * pixelSize;
+    const key = `${column}:${row}`;
 
     lcdPixelsRef.current.set(key, {
       updatedAt,
@@ -299,8 +332,9 @@ function App() {
     from: LcdPoint,
     to: LcdPoint,
     updatedAt: number,
-    pixelSize: number,
+    drawing: LcdDrawing,
   ) => {
+    const { pixelSize } = drawing;
     const distance = Math.hypot(to.x - from.x, to.y - from.y);
     const steps = Math.max(1, Math.ceil(distance / pixelSize));
 
@@ -313,7 +347,7 @@ function App() {
           y: from.y + (to.y - from.y) * progress,
         },
         updatedAt,
-        pixelSize,
+        drawing,
       );
     }
   };
@@ -337,7 +371,7 @@ function App() {
     const previousPoint = lcdPreviousPointRef.current ?? currentPoint;
     const updatedAt = performance.now();
 
-    addLcdTrail(previousPoint, currentPoint, updatedAt, drawing.pixelSize);
+    addLcdTrail(previousPoint, currentPoint, updatedAt, drawing);
     lcdPreviousPointRef.current = currentPoint;
     queueLcdTrailRender();
   };
