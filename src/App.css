@@ -4,42 +4,302 @@
   box-sizing: border-box;
 }
 
+html,
+body,
+#root {
+  height: 100%;
+  background: #a3b179;
+}
+
 body {
   margin: 0;
-  background: white;
   overflow: hidden;
   font-family: Arial, Helvetica, sans-serif;
 }
 
 .appContainer {
   position: relative;
-  width: 100vw;
-  height: 100vh;
-  height: 100dvh;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #a3b179;
 }
 
-.deviceLayer {
+.lcdLayer {
+  --lcd-pixel: clamp(3px, 0.32vw, 6px);
+
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background-color: #a3b179;
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.07) 0,
+    rgba(255, 255, 255, 0.07) 1px,
+    transparent 1px,
+    transparent calc(var(--lcd-pixel) + 1px)
+  );
+  background-position: 0 0;
+  color: #1c211a;
+}
+
+.lcdTrail {
   position: absolute;
   inset: 0;
-  z-index: 2;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.lcdLanding {
+  position: absolute;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   pointer-events: none;
 }
 
+.lcdScreenBezel {
+  position: absolute;
+  top: var(--screen-y);
+  left: var(--screen-x);
+  z-index: 4;
+  box-sizing: border-box;
+  width: var(--screen-width);
+  height: var(--screen-height);
+  border-width: max(calc(var(--device-width) * 3 / 624), 2px);
+  border-style: solid;
+  border-color: rgba(38, 48, 34, 0.62);
+  border-radius: calc(var(--device-width) * 10 / 624);
+  box-shadow:
+    inset 0 3px 10px rgba(255, 255, 255, 0.26),
+    inset 0 -4px 10px rgba(32, 42, 30, 0.28);
+  pointer-events: none;
+}
+
+.lcdEnterLabel {
+  position: relative;
+  z-index: 1;
+  font-family: "Jacquard 12", Arial, Helvetica, sans-serif;
+  font-size: clamp(1.75rem, 4.8vw, 3rem);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.lcdEnterOverlay {
+  position: absolute;
+  z-index: 4;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.lcdEnterOverlay:focus-visible {
+  outline: 2px solid rgba(38, 48, 34, 0.45);
+  outline-offset: 2px;
+}
+
+.lcdEnterOverlay:disabled {
+  cursor: default;
+  pointer-events: none;
+}
+
+.lcdExpanded {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  padding:
+    clamp(1.25rem, 4vw, 2.75rem)
+    clamp(1.25rem, 5vw, 3.5rem)
+    clamp(1rem, 3vw, 2rem);
+}
+
+.lcdBack {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  align-self: flex-start;
+  font-family: "Jacquard 12", Arial, Helvetica, sans-serif;
+  font-size: clamp(1.25rem, 3.2vw, 2rem);
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.lcdBack:hover,
+.lcdBack:focus-visible {
+  color: #263022;
+  outline: none;
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.35);
+}
+
+.lcdBack:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.lcdBody {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.75rem, 2.5vw, 1.5rem);
+  max-width: 42rem;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.lcdName {
+  margin: 0;
+  font-family: "Jacquard 12", Arial, Helvetica, sans-serif;
+  font-size: clamp(2.5rem, 9vw, 5.5rem);
+  line-height: 0.95;
+  font-weight: 700;
+}
+
+.lcdTagline {
+  margin: 0;
+  font-family: "Jacquard 12", Arial, Helvetica, sans-serif;
+  font-size: clamp(1.35rem, 4vw, 2.35rem);
+  line-height: 1.1;
+  font-weight: 700;
+  opacity: 0.92;
+}
+
+.lcdBio {
+  margin: 0;
+  max-width: 28rem;
+  font-size: clamp(0.95rem, 2.2vw, 1.15rem);
+  line-height: 1.55;
+  opacity: 0.82;
+}
+
+.lcdFooter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1rem, 4vw, 2.5rem);
+  padding-top: clamp(0.75rem, 2vw, 1.25rem);
+}
+
+.lcdFooterLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: inherit;
+  font-size: clamp(0.85rem, 2vw, 1rem);
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  text-transform: lowercase;
+}
+
+.lcdFooterLink:hover,
+.lcdFooterLink:focus-visible {
+  color: #263022;
+  outline: none;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.lcdFooterIcon {
+  display: flex;
+  width: 1.1rem;
+  height: 1.1rem;
+  opacity: 0.72;
+}
+
+.lcdFooterIcon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.foregroundLayer {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  overflow: visible;
+  pointer-events: none;
+  backface-visibility: hidden;
+  contain: layout style;
+}
+
+.maskDef {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.foregroundSurface {
+  position: absolute;
+  inset: 0;
+  background: white;
+  pointer-events: none;
+}
+
+.clickBlockers {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.clickBlocker {
+  position: absolute;
+  pointer-events: auto;
+}
+
+.grid {
+  --grid-block-size: 5vw;
+
+  position: absolute;
+  inset: 0;
+  display: flex;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.column {
+  width: var(--grid-block-size);
+  height: 100%;
+}
+
+.block {
+  width: var(--grid-block-size);
+  height: var(--grid-block-size);
+  pointer-events: auto;
+  transition: background-color 300ms ease;
+}
+
 .device {
-  --device-width: min(680px, 94vw, calc(94vh * 624 / 731));
-  --device-width: min(680px, 94vw, calc(94dvh * 624 / 731));
-  --device-height: calc(var(--device-width) * 731 / 624);
   --button-size: calc(var(--device-width) * 52 / 638);
   --screen-x: calc(var(--device-width) * 190 / 624);
   --screen-y: calc(var(--device-width) * 265 / 624);
   --screen-width: calc(var(--device-width) * 265 / 624);
   --screen-height: calc(var(--device-width) * 250 / 624);
-  position: relative;
-  width: var(--device-width);
-  aspect-ratio: 624 / 731;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  transform: translate(-50%, -50%);
+}
+
+.deviceShell {
+  position: absolute;
+  inset: 0;
 }
 
 .deviceBase {
@@ -77,57 +337,6 @@ body {
   pointer-events: none;
   transform: translateX(-50%) perspective(calc(var(--device-width) * 360 / 624))
     rotateX(10deg);
-}
-
-.content {
-  --lcd-columns: 32;
-  --lcd-rows: 30;
-  position: absolute;
-  top: var(--screen-y);
-  left: var(--screen-x);
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: calc(var(--device-width) * 16 / 624);
-  width: var(--screen-width);
-  height: var(--screen-height);
-  padding: calc(var(--device-width) * 16 / 624);
-  overflow: hidden;
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.16) 50%, rgba(0, 0, 0, 0.04) 50%),
-    #9cae76;
-  background-size: 100% calc(100% / var(--lcd-rows));
-  border: calc(var(--device-width) * 3 / 624) solid rgba(38, 48, 34, 0.55);
-  border-radius: calc(var(--device-width) * 10 / 624);
-  box-shadow:
-    inset 0 calc(var(--device-width) * 4 / 624)
-      calc(var(--device-width) * 12 / 624) rgba(255, 255, 255, 0.28),
-    inset 0 calc(var(--device-width) * -6 / 624)
-      calc(var(--device-width) * 14 / 624) rgba(32, 42, 30, 0.35);
-  color: #1c211a;
-  pointer-events: auto;
-  text-align: center;
-}
-
-.lcdTrail {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-}
-
-.content p {
-  position: relative;
-  z-index: 1;
-  margin: 0;
-  font-family: "Jacquard 12", Arial, Helvetica, sans-serif;
-  font-size: calc(var(--device-width) * 48 / 624);
-  line-height: 1;
-  font-weight: 700;
 }
 
 .physicalButtons {
@@ -196,23 +405,8 @@ body {
   opacity: 1;
 }
 
-.grid {
-  --grid-block-size: 5vw;
-
-  position: fixed;
-  inset: 0;
-  display: flex;
-  z-index: 1;
-}
-
-.column {
-  width: var(--grid-block-size);
-  height: 100vh;
-  height: 100dvh;
-}
-
-.block {
-  width: var(--grid-block-size);
-  height: var(--grid-block-size);
-  transition: background-color 300ms ease;
+@media (prefers-reduced-motion: reduce) {
+  .block {
+    transition: none;
+  }
 }

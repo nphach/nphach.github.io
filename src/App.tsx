@@ -1,3 +1,4 @@
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import {
   useCallback,
   useEffect,
@@ -17,6 +18,7 @@ const LCD_TRAIL_FADE_MS = 720;
 const LCD_TRAIL_HOLD_MS = 80;
 const LCD_TRAIL_OPACITY = 0.78;
 const GRID_COLUMN_COUNT = 20;
+const DEVICE_ASPECT = 624 / 731;
 
 const BUTTON_ART_SOURCES = ["left", "middle", "right"] as const;
 
@@ -56,6 +58,18 @@ const PHYSICAL_BUTTONS = [
   },
 ] as const;
 
+const FOOTER_LINKS = [
+  { href: "https://github.com/nphach/", icon: "github", label: "GitHub" },
+  {
+    href: "https://www.linkedin.com/in/nphach/",
+    icon: "linkedin",
+    label: "LinkedIn",
+  },
+  { href: "mailto:nikkiphach@gmail.com", icon: "email", label: "Email" },
+] as const;
+
+type View = "landing" | "expanded";
+
 type LcdPoint = {
   x: number;
   y: number;
@@ -77,6 +91,23 @@ type LcdDrawing = {
   width: number;
 };
 
+type DeviceMetrics = {
+  deviceHeight: number;
+  deviceLeft: number;
+  deviceTop: number;
+  deviceWidth: number;
+  expandedScale: number;
+  holeCenterX: number;
+  holeCenterY: number;
+  holeLeft: number;
+  holeRadius: number;
+  holeTop: number;
+  screenHeight: number;
+  screenWidth: number;
+  zoomOriginX: number;
+  zoomOriginY: number;
+};
+
 type MutableRef<T> = {
   current: T;
 };
@@ -95,6 +126,84 @@ const getViewportSize = () => ({
 
 const getGridBlockSize = (viewportWidth: number) =>
   Math.max(viewportWidth * GRID_BLOCK_SIZE_RATIO, 1);
+
+const getZoomOrigin = (
+  viewportSize: number,
+  holeNearEdge: number,
+  holeSize: number,
+) => (viewportSize * holeNearEdge) / (viewportSize - holeSize);
+
+const getExpandedScale = (
+  viewportWidth: number,
+  viewportHeight: number,
+  holeLeft: number,
+  holeTop: number,
+  screenWidth: number,
+  screenHeight: number,
+  zoomOriginX: number,
+  zoomOriginY: number,
+) => {
+  const holeRight = holeLeft + screenWidth;
+  const holeBottom = holeTop + screenHeight;
+  const scaleX = Math.max(
+    zoomOriginX / (zoomOriginX - holeLeft),
+    (viewportWidth - zoomOriginX) / (holeRight - zoomOriginX),
+  );
+  const scaleY = Math.max(
+    zoomOriginY / (zoomOriginY - holeTop),
+    (viewportHeight - zoomOriginY) / (holeBottom - zoomOriginY),
+  );
+
+  return Math.max(scaleX, scaleY) * 1.04;
+};
+
+const getDeviceMetrics = (
+  viewportWidth: number,
+  viewportHeight: number,
+): DeviceMetrics => {
+  const deviceWidth = Math.min(
+    680,
+    viewportWidth * 0.94,
+    viewportHeight * 0.94 * DEVICE_ASPECT,
+  );
+  const deviceHeight = deviceWidth / DEVICE_ASPECT;
+  const screenX = deviceWidth * (190 / 624);
+  const screenY = deviceWidth * (265 / 624);
+  const screenWidth = deviceWidth * (265 / 624);
+  const screenHeight = deviceWidth * (250 / 624);
+  const deviceLeft = (viewportWidth - deviceWidth) / 2;
+  const deviceTop = (viewportHeight - deviceHeight) / 2;
+  const holeLeft = deviceLeft + screenX;
+  const holeTop = deviceTop + screenY;
+  const zoomOriginX = getZoomOrigin(viewportWidth, holeLeft, screenWidth);
+  const zoomOriginY = getZoomOrigin(viewportHeight, holeTop, screenHeight);
+
+  return {
+    deviceHeight,
+    deviceLeft,
+    deviceTop,
+    deviceWidth,
+    expandedScale: getExpandedScale(
+      viewportWidth,
+      viewportHeight,
+      holeLeft,
+      holeTop,
+      screenWidth,
+      screenHeight,
+      zoomOriginX,
+      zoomOriginY,
+    ),
+    holeCenterX: holeLeft + screenWidth / 2,
+    holeCenterY: holeTop + screenHeight / 2,
+    holeLeft,
+    holeRadius: deviceWidth * (10 / 624),
+    holeTop,
+    screenHeight,
+    screenWidth,
+    zoomOriginX,
+    zoomOriginY,
+  };
+};
 
 const isExternalLink = (href: string) => !href.startsWith("mailto:");
 
@@ -180,16 +289,52 @@ const drawLcdTrailFrame = (
     : null;
 };
 
+const CONTENT_TRANSITION = {
+  duration: 0.28,
+  ease: [0.4, 0, 0.2, 1] as [number, number, number, number],
+};
+
+const ZOOM_TRANSITION = {
+  duration: 0.88,
+  ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
+};
+
+const DEVICE_FADE = {
+  duration: 0.2,
+  ease: [0.4, 0, 0.2, 1] as [number, number, number, number],
+};
+
 function App() {
+  const prefersReducedMotion = useReducedMotion();
+  const [view, setView] = useState<View>("landing");
+  const [zoomExpanded, setZoomExpanded] = useState(false);
+  const [landingContentVisible, setLandingContentVisible] = useState(true);
+  const [expandedContentVisible, setExpandedContentVisible] = useState(false);
+  const [isBusy, setIsBusy] = useState(false);
   const [viewportSize, setViewportSize] = useState(getViewportSize);
   const lcdAnimationRef = useRef<number | null>(null);
-  const lcdBoundsRef = useRef<DOMRectReadOnly | null>(null);
   const lcdCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const lcdDrawingRef = useRef<LcdDrawing | null>(null);
+  const lcdLayerRef = useRef<HTMLDivElement | null>(null);
   const lcdPixelsRef = useRef(new Map<string, LcdPixel>());
   const lcdPreviousPointRef = useRef<LcdPoint | null>(null);
-  const contentRef = useRef<HTMLDivElement | null>(null);
+  const pendingPhaseRef = useRef<
+    "await-content-in" | "await-content-out" | null
+  >(null);
+  const viewRef = useRef<View>("landing");
 
+  const metrics = useMemo(
+    () => getDeviceMetrics(viewportSize.width, viewportSize.height),
+    [viewportSize],
+  );
+
+  const isExpanded = view === "expanded";
+  const contentTransition = prefersReducedMotion
+    ? { duration: 0 }
+    : CONTENT_TRANSITION;
+  const zoomTransition = prefersReducedMotion
+    ? { duration: 0 }
+    : ZOOM_TRANSITION;
   const blockRows = useMemo(() => {
     const blockSize = getGridBlockSize(viewportSize.width);
 
@@ -203,21 +348,18 @@ function App() {
 
   const updateLcdMetrics = useCallback(() => {
     const canvas = lcdCanvasRef.current;
-    const content = contentRef.current;
+    const layer = lcdLayerRef.current;
 
-    if (!canvas || !content) {
-      lcdBoundsRef.current = null;
+    if (!canvas || !layer) {
       lcdDrawingRef.current = null;
       return null;
     }
 
     const context = canvas.getContext("2d");
-    const rect = content.getBoundingClientRect();
+    const rect = layer.getBoundingClientRect();
     const pixelRatio = window.devicePixelRatio || 1;
     const width = Math.round(rect.width * pixelRatio);
     const height = Math.round(rect.height * pixelRatio);
-
-    lcdBoundsRef.current = rect;
 
     if (!context || width === 0 || height === 0) {
       lcdDrawingRef.current = null;
@@ -254,6 +396,31 @@ function App() {
   }, []);
 
   useEffect(() => {
+    viewRef.current = view;
+  }, [view]);
+
+  useEffect(() => {
+    if (
+      !expandedContentVisible ||
+      pendingPhaseRef.current !== "await-content-in"
+    ) {
+      return;
+    }
+
+    const delay = prefersReducedMotion ? 0 : CONTENT_TRANSITION.duration * 1000;
+    const timer = window.setTimeout(() => {
+      if (pendingPhaseRef.current === "await-content-in") {
+        pendingPhaseRef.current = null;
+        setIsBusy(false);
+      }
+    }, delay);
+
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [expandedContentVisible, prefersReducedMotion]);
+
+  useEffect(() => {
     const onResize = () => {
       setViewportSize(getViewportSize());
       updateLcdMetrics();
@@ -268,8 +435,8 @@ function App() {
     window.visualViewport?.addEventListener("resize", onResize);
     window.visualViewport?.addEventListener("scroll", onResize);
 
-    if (contentRef.current) {
-      resizeObserver?.observe(contentRef.current);
+    if (lcdLayerRef.current) {
+      resizeObserver?.observe(lcdLayerRef.current);
     }
 
     return () => {
@@ -352,18 +519,37 @@ function App() {
     }
   };
 
-  const handleLcdPointerMove = (event: PointerEvent<HTMLDivElement>) => {
-    if (!lcdBoundsRef.current) {
-      updateLcdMetrics();
+  const isPointInActiveLcd = (clientX: number, clientY: number) => {
+    if (viewRef.current === "expanded") {
+      return true;
     }
 
-    const drawing = lcdDrawingRef.current ?? updateLcdMetrics();
-    const rect = lcdBoundsRef.current;
+    const { holeLeft, holeTop, screenHeight, screenWidth } = getDeviceMetrics(
+      window.visualViewport?.width ?? window.innerWidth,
+      window.visualViewport?.height ?? window.innerHeight,
+    );
 
-    if (!rect || !drawing) {
+    return (
+      clientX >= holeLeft &&
+      clientX <= holeLeft + screenWidth &&
+      clientY >= holeTop &&
+      clientY <= holeTop + screenHeight
+    );
+  };
+
+  const handleLcdPointerMove = (event: PointerEvent<HTMLDivElement>) => {
+    if (isBusy || !isPointInActiveLcd(event.clientX, event.clientY)) {
       return;
     }
 
+    const drawing = lcdDrawingRef.current ?? updateLcdMetrics();
+    const layer = lcdLayerRef.current;
+
+    if (!layer || !drawing) {
+      return;
+    }
+
+    const rect = layer.getBoundingClientRect();
     const currentPoint = {
       x: event.clientX - rect.left,
       y: event.clientY - rect.top,
@@ -380,78 +566,399 @@ function App() {
     lcdPreviousPointRef.current = null;
   };
 
+  const enterExpanded = () => {
+    if (isBusy || isExpanded) {
+      return;
+    }
+
+    pendingPhaseRef.current = "await-content-in";
+    setIsBusy(true);
+    setLandingContentVisible(false);
+    setZoomExpanded(true);
+  };
+
+  const returnToLanding = () => {
+    if (isBusy || !isExpanded) {
+      return;
+    }
+
+    pendingPhaseRef.current = "await-content-out";
+    setIsBusy(true);
+    setExpandedContentVisible(false);
+  };
+
+  const handleZoomComplete = () => {
+    if (zoomExpanded && view === "landing") {
+      setView("expanded");
+      setExpandedContentVisible(true);
+
+      if (prefersReducedMotion) {
+        pendingPhaseRef.current = null;
+        setIsBusy(false);
+      }
+
+      return;
+    }
+
+    if (!zoomExpanded && view !== "landing") {
+      setView("landing");
+      setLandingContentVisible(true);
+      pendingPhaseRef.current = null;
+      setIsBusy(false);
+    }
+  };
+
+  const handleExpandedContentShown = () => {
+    if (pendingPhaseRef.current !== "await-content-in") {
+      return;
+    }
+
+    pendingPhaseRef.current = null;
+    setIsBusy(false);
+  };
+
+  const handleExpandedContentHidden = () => {
+    if (pendingPhaseRef.current !== "await-content-out") {
+      return;
+    }
+
+    pendingPhaseRef.current = null;
+    setZoomExpanded(false);
+
+    if (prefersReducedMotion) {
+      setView("landing");
+      setLandingContentVisible(true);
+      setIsBusy(false);
+    }
+  };
+
+  const foregroundScale = zoomExpanded ? metrics.expandedScale : 1;
+  const foregroundOpacity = isBusy ? 1 : view === "expanded" ? 0 : 1;
+  const deviceOpacity = isBusy && zoomExpanded ? 0 : 1;
+  const deviceTransition = prefersReducedMotion ? { duration: 0 } : DEVICE_FADE;
+  const transformOrigin = `${metrics.zoomOriginX}px ${metrics.zoomOriginY}px`;
+
+  const holeBottom = metrics.holeTop + metrics.screenHeight;
+  const holeRight = metrics.holeLeft + metrics.screenWidth;
+  const gridBlockSize = getGridBlockSize(viewportSize.width);
+  const screenX = metrics.deviceWidth * (190 / 624);
+  const screenY = metrics.deviceWidth * (265 / 624);
+
+  const isGridBlockInteractive = (columnIndex: number, rowIndex: number) => {
+    const blockLeft = columnIndex * gridBlockSize;
+    const blockTop = rowIndex * gridBlockSize;
+    const blockRight = blockLeft + gridBlockSize;
+    const blockBottom = blockTop + gridBlockSize;
+
+    return (
+      blockRight <= metrics.holeLeft ||
+      blockLeft >= holeRight ||
+      blockBottom <= metrics.holeTop ||
+      blockTop >= holeBottom
+    );
+  };
+
+  const maskStyle = {
+    WebkitMaskImage: "url(#screen-hole-mask)",
+    maskImage: "url(#screen-hole-mask)",
+  } as const;
+
+  const deviceMaskStyle = {
+    WebkitMaskImage: "url(#device-shell-mask)",
+    maskImage: "url(#device-shell-mask)",
+  } as const;
+
   return (
     <main className="appContainer">
-      <div className="deviceLayer">
-        <div className="device">
-          <img className="deviceBase" src="/assets/base/base.svg" alt="base" />
-          {BUTTON_ART_SOURCES.map((name) => (
-            <img
-              key={name}
-              className="buttonArt"
-              src={`/assets/base/${name}.svg`}
-              alt=""
+      <div
+        ref={lcdLayerRef}
+        className="lcdLayer"
+        onPointerLeave={handleLcdPointerLeave}
+        onPointerMove={handleLcdPointerMove}
+      >
+        <canvas ref={lcdCanvasRef} className="lcdTrail" aria-hidden="true" />
+
+        <AnimatePresence mode="wait">
+          {landingContentVisible && (
+            <motion.div
+              key="landing-ui"
+              animate={{ opacity: 1 }}
               aria-hidden="true"
-            />
-          ))}
+              className="lcdLanding"
+              exit={{ opacity: 0 }}
+              initial={{ opacity: 0 }}
+              style={{
+                height: metrics.screenHeight,
+                left: metrics.holeLeft,
+                top: metrics.holeTop,
+                width: metrics.screenWidth,
+              }}
+              transition={contentTransition}
+            >
+              <span className="lcdEnterLabel">enter ›</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-          <img
-            className="deviceHeader"
-            src="/assets/base/header.svg"
-            alt="nikkiphach"
-          />
+        <AnimatePresence
+          mode="wait"
+          onExitComplete={handleExpandedContentHidden}
+        >
+          {expandedContentVisible && (
+            <motion.div
+              key="expanded-content"
+              animate={{ opacity: 1 }}
+              className="lcdExpanded"
+              exit={{ opacity: 0 }}
+              initial={{ opacity: 0 }}
+              onAnimationComplete={handleExpandedContentShown}
+              transition={contentTransition}
+            >
+              <button
+                className="lcdBack"
+                disabled={isBusy}
+                onClick={returnToLanding}
+                type="button"
+              >
+                ‹ back
+              </button>
 
-          <div
-            ref={contentRef}
-            className="content"
-            onPointerLeave={handleLcdPointerLeave}
-            onPointerMove={handleLcdPointerMove}
-          >
-            <canvas
-              ref={lcdCanvasRef}
-              className="lcdTrail"
-              aria-hidden="true"
-            />
+              <div className="lcdBody">
+                <p className="lcdName">nikki phach</p>
+                <p className="lcdTagline">software engineer</p>
+                <p className="lcdBio">building cool things.</p>
+              </div>
 
-            <p>refresh in progress</p>
-          </div>
+              <footer className="lcdFooter" aria-label="Profile links">
+                {FOOTER_LINKS.map(({ href, icon, label }) => {
+                  const external = isExternalLink(href);
 
-          <div className="physicalButtons" aria-label="Profile links">
-            {PHYSICAL_BUTTONS.map(({ className, href, icon, label }) => {
-              const external = isExternalLink(href);
-
-              return (
-                <a
-                  key={label}
-                  aria-label={label}
-                  className={`physicalButton ${className}`}
-                  href={href}
-                  target={external ? "_blank" : undefined}
-                  rel={external ? "noreferrer" : undefined}
-                >
-                  <span className="physicalButtonIcon" aria-hidden="true">
-                    <ProfileIcon name={icon} />
-                  </span>
-                </a>
-              );
-            })}
-          </div>
-        </div>
+                  return (
+                    <a
+                      key={label}
+                      className="lcdFooterLink"
+                      href={href}
+                      target={external ? "_blank" : undefined}
+                      rel={external ? "noreferrer" : undefined}
+                    >
+                      <span className="lcdFooterIcon" aria-hidden="true">
+                        <ProfileIcon name={icon} />
+                      </span>
+                      {label}
+                    </a>
+                  );
+                })}
+              </footer>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
-      <div className="grid">
-        {GRID_COLUMNS.map((index) => (
-          <div key={index} className="column">
-            {rowIndexes.map((rowIndex) => (
-              <div
-                key={rowIndex}
-                className="block"
-                onMouseEnter={(event) => colorize(event.currentTarget)}
+      <motion.div
+        animate={{
+          opacity: foregroundOpacity,
+          scale: foregroundScale,
+        }}
+        className="foregroundLayer"
+        onAnimationComplete={handleZoomComplete}
+        style={{
+          transformOrigin,
+          willChange: "transform, opacity",
+        }}
+        transition={{
+          opacity: {
+            duration: prefersReducedMotion ? 0 : 0.16,
+            ease: "easeOut",
+          },
+          scale: zoomTransition,
+        }}
+      >
+        <svg
+          aria-hidden="true"
+          className="maskDef"
+          height={viewportSize.height}
+          width={viewportSize.width}
+        >
+          <defs>
+            <mask
+              id="screen-hole-mask"
+              maskContentUnits="userSpaceOnUse"
+              maskUnits="userSpaceOnUse"
+              height={viewportSize.height}
+              width={viewportSize.width}
+              x="0"
+              y="0"
+            >
+              <rect
+                fill="white"
+                height={viewportSize.height}
+                width={viewportSize.width}
+              />
+              <rect
+                fill="black"
+                height={metrics.screenHeight + 1}
+                rx={metrics.holeRadius}
+                ry={metrics.holeRadius}
+                width={metrics.screenWidth + 1}
+                x={metrics.holeLeft - 0.5}
+                y={metrics.holeTop - 0.5}
+              />
+            </mask>
+            <mask
+              id="device-shell-mask"
+              maskContentUnits="userSpaceOnUse"
+              maskUnits="userSpaceOnUse"
+              height={metrics.deviceHeight}
+              width={metrics.deviceWidth}
+              x="0"
+              y="0"
+            >
+              <rect
+                fill="white"
+                height={metrics.deviceHeight}
+                width={metrics.deviceWidth}
+              />
+              <rect
+                fill="black"
+                height={metrics.screenHeight}
+                rx={metrics.holeRadius}
+                ry={metrics.holeRadius}
+                width={metrics.screenWidth}
+                x={screenX}
+                y={screenY}
+              />
+            </mask>
+          </defs>
+        </svg>
+
+        <div className="foregroundSurface" style={maskStyle} />
+
+        <div className="clickBlockers" aria-hidden="true">
+          <div
+            className="clickBlocker"
+            style={{ height: metrics.holeTop, left: 0, right: 0, top: 0 }}
+          />
+          <div
+            className="clickBlocker"
+            style={{
+              height: viewportSize.height - holeBottom,
+              left: 0,
+              right: 0,
+              top: holeBottom,
+            }}
+          />
+          <div
+            className="clickBlocker"
+            style={{
+              height: metrics.screenHeight,
+              left: 0,
+              top: metrics.holeTop,
+              width: metrics.holeLeft,
+            }}
+          />
+          <div
+            className="clickBlocker"
+            style={{
+              height: metrics.screenHeight,
+              left: holeRight,
+              right: 0,
+              top: metrics.holeTop,
+            }}
+          />
+        </div>
+
+        <div className="grid" style={maskStyle}>
+          {GRID_COLUMNS.map((index) => (
+            <div key={index} className="column">
+              {rowIndexes.map((rowIndex) => (
+                <div
+                  key={rowIndex}
+                  className="block"
+                  onMouseEnter={(event) => colorize(event.currentTarget)}
+                  style={{
+                    pointerEvents: isGridBlockInteractive(index, rowIndex)
+                      ? "auto"
+                      : "none",
+                  }}
+                />
+              ))}
+            </div>
+          ))}
+        </div>
+
+        {landingContentVisible && !isExpanded && (
+          <button
+            aria-label="enter"
+            className="lcdEnterOverlay"
+            disabled={isBusy}
+            onClick={enterExpanded}
+            style={{
+              height: metrics.screenHeight,
+              left: metrics.holeLeft,
+              top: metrics.holeTop,
+              width: metrics.screenWidth,
+            }}
+            type="button"
+          />
+        )}
+
+        <motion.div
+          className="device"
+          style={{
+            ["--device-height" as string]: `${metrics.deviceHeight}px`,
+            ["--device-width" as string]: `${metrics.deviceWidth}px`,
+            height: metrics.deviceHeight,
+            width: metrics.deviceWidth,
+          }}
+        >
+          <div aria-hidden="true" className="lcdScreenBezel" />
+
+          <motion.div
+            animate={{ opacity: deviceOpacity }}
+            className="deviceShell"
+            style={deviceMaskStyle}
+            transition={{ opacity: deviceTransition }}
+          >
+            <img className="deviceBase" src="/assets/base/base.svg" alt="" />
+            {BUTTON_ART_SOURCES.map((name) => (
+              <img
+                key={name}
+                className="buttonArt"
+                src={`/assets/base/${name}.svg`}
+                alt=""
+                aria-hidden="true"
               />
             ))}
-          </div>
-        ))}
-      </div>
+
+            <img
+              className="deviceHeader"
+              src="/assets/base/header.svg"
+              alt="nikkiphach"
+            />
+
+            <div className="physicalButtons" aria-label="Profile links">
+              {PHYSICAL_BUTTONS.map(({ className, href, icon, label }) => {
+                const external = isExternalLink(href);
+
+                return (
+                  <a
+                    key={label}
+                    aria-label={label}
+                    className={`physicalButton ${className}`}
+                    href={href}
+                    target={external ? "_blank" : undefined}
+                    rel={external ? "noreferrer" : undefined}
+                  >
+                    <span className="physicalButtonIcon" aria-hidden="true">
+                      <ProfileIcon name={icon} />
+                    </span>
+                  </a>
+                );
+              })}
+            </div>
+          </motion.div>
+        </motion.div>
+      </motion.div>
     </main>
   );
 }
