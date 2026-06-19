@@ -373,21 +373,36 @@ function App() {
 
     context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
 
-    const pixelSize = Math.min(
-      rect.width / LCD_COLUMN_COUNT,
-      rect.height / LCD_ROW_COUNT,
-    );
-    const gridOffsetX = (rect.width - pixelSize * LCD_COLUMN_COUNT) / 2;
-    const gridOffsetY = (rect.height - pixelSize * LCD_ROW_COUNT) / 2;
+    const expanded = viewRef.current === "expanded";
+    let columns = LCD_COLUMN_COUNT;
+    let rows = LCD_ROW_COUNT;
+    let pixelSize: number;
+    let gridOffsetX: number;
+    let gridOffsetY: number;
+
+    if (expanded) {
+      pixelSize = rect.width / LCD_COLUMN_COUNT;
+      gridOffsetX = 0;
+      rows = Math.max(1, Math.floor(rect.height / pixelSize));
+      gridOffsetY = (rect.height - rows * pixelSize) / 2;
+    } else {
+      pixelSize = Math.min(
+        rect.width / LCD_COLUMN_COUNT,
+        rect.height / LCD_ROW_COUNT,
+      );
+      gridOffsetX = (rect.width - pixelSize * columns) / 2;
+      gridOffsetY = (rect.height - pixelSize * rows) / 2;
+    }
+
     const drawing = {
-      columns: LCD_COLUMN_COUNT,
+      columns,
       context,
       gridOffsetX,
       gridOffsetY,
       height: rect.height,
       pixelGap: pixelSize * LCD_PIXEL_GAP_RATIO,
       pixelSize,
-      rows: LCD_ROW_COUNT,
+      rows,
       width: rect.width,
     };
 
@@ -397,7 +412,9 @@ function App() {
 
   useEffect(() => {
     viewRef.current = view;
-  }, [view]);
+    updateLcdMetrics();
+    lcdPixelsRef.current.clear();
+  }, [view, updateLcdMetrics]);
 
   useEffect(() => {
     if (
@@ -726,7 +743,7 @@ function App() {
               <div className="lcdBody">
                 <p className="lcdName">nikki phach</p>
                 <p className="lcdTagline">software engineer</p>
-                <p className="lcdBio">building cool things.</p>
+                <p className="lcdBio">under construction...</p>
               </div>
 
               <footer className="lcdFooter" aria-label="Profile links">
@@ -759,7 +776,7 @@ function App() {
           opacity: foregroundOpacity,
           scale: foregroundScale,
         }}
-        className="foregroundLayer"
+        className={`foregroundLayer${isExpanded && !isBusy ? " foregroundLayer--inactive" : ""}`}
         onAnimationComplete={handleZoomComplete}
         style={{
           transformOrigin,

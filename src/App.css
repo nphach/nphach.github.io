@@ -80,6 +80,17 @@ body {
   pointer-events: none;
 }
 
+@keyframes lcdEnterFlicker {
+  0%,
+  100% {
+    opacity: 0.9;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
 .lcdEnterLabel {
   position: relative;
   z-index: 1;
@@ -87,6 +98,7 @@ body {
   font-size: clamp(1.75rem, 4.8vw, 3rem);
   font-weight: 700;
   line-height: 1;
+  animation: lcdEnterFlicker 1.35s ease-in-out infinite;
 }
 
 .lcdEnterOverlay {
@@ -115,9 +127,7 @@ body {
   z-index: 1;
   display: flex;
   flex-direction: column;
-  padding:
-    clamp(1.25rem, 4vw, 2.75rem)
-    clamp(1.25rem, 5vw, 3.5rem)
+  padding: clamp(1.25rem, 4vw, 2.75rem) clamp(1.25rem, 5vw, 3.5rem)
     clamp(1rem, 3vw, 2rem);
 }
 
@@ -235,6 +245,11 @@ body {
   contain: layout style;
 }
 
+.foregroundLayer--inactive,
+.foregroundLayer--inactive * {
+  pointer-events: none !important;
+}
+
 .maskDef {
   position: absolute;
   inset: 0;
@@ -318,9 +333,13 @@ body {
   z-index: 1;
   width: 100%;
   height: 100%;
-  filter:
-    drop-shadow(0 0 calc(var(--device-width) * 3 / 624) rgba(238, 239, 242, 0.38))
-    drop-shadow(0 calc(var(--device-width) * 2 / 624) calc(var(--device-width) * 5 / 624) rgba(220, 232, 182, 0.2));
+  filter: drop-shadow(
+      0 0 calc(var(--device-width) * 3 / 624) rgba(238, 239, 242, 0.38)
+    )
+    drop-shadow(
+      0 calc(var(--device-width) * 2 / 624) calc(var(--device-width) * 5 / 624)
+        rgba(220, 232, 182, 0.2)
+    );
   object-fit: contain;
   pointer-events: none;
 }
@@ -405,8 +424,47 @@ body {
   opacity: 1;
 }
 
+@media (max-width: 640px) {
+  .lcdExpanded {
+    padding-inline: clamp(0.875rem, 3vw, 1.5rem);
+  }
+
+  .lcdBody {
+    gap: clamp(1rem, 3.5vw, 1.75rem);
+  }
+
+  .lcdBack {
+    font-size: clamp(1.75rem, 5.5vw, 2.25rem);
+  }
+
+  .lcdName {
+    font-size: clamp(4.25rem, 17vw, 5.5rem);
+  }
+
+  .lcdTagline {
+    font-size: clamp(2.4rem, 8vw, 2.75rem);
+  }
+
+  .lcdBio {
+    font-size: clamp(1.35rem, 4.8vw, 1.55rem);
+  }
+
+  .lcdFooterLink {
+    font-size: clamp(1.15rem, 3.8vw, 1.25rem);
+  }
+
+  .lcdFooterIcon {
+    width: 1.35rem;
+    height: 1.35rem;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .block {
     transition: none;
+  }
+
+  .lcdEnterLabel {
+    animation: none;
   }
 }
