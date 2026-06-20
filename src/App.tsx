@@ -658,8 +658,6 @@ function App() {
   const holeBottom = metrics.holeTop + metrics.screenHeight;
   const holeRight = metrics.holeLeft + metrics.screenWidth;
   const gridBlockSize = getGridBlockSize(viewportSize.width);
-  const screenX = metrics.deviceWidth * (190 / 624);
-  const screenY = metrics.deviceWidth * (265 / 624);
 
   const isGridBlockInteractive = (columnIndex: number, rowIndex: number) => {
     const blockLeft = columnIndex * gridBlockSize;
@@ -675,16 +673,6 @@ function App() {
     );
   };
 
-  const maskStyle = {
-    WebkitMaskImage: "url(#screen-hole-mask)",
-    maskImage: "url(#screen-hole-mask)",
-  } as const;
-
-  const deviceMaskStyle = {
-    WebkitMaskImage: "url(#device-shell-mask)",
-    maskImage: "url(#device-shell-mask)",
-  } as const;
-
   return (
     <main className="appContainer">
       <div
@@ -694,28 +682,6 @@ function App() {
         onPointerMove={handleLcdPointerMove}
       >
         <canvas ref={lcdCanvasRef} className="lcdTrail" aria-hidden="true" />
-
-        <AnimatePresence mode="wait">
-          {landingContentVisible && (
-            <motion.div
-              key="landing-ui"
-              animate={{ opacity: 1 }}
-              aria-hidden="true"
-              className="lcdLanding"
-              exit={{ opacity: 0 }}
-              initial={{ opacity: 0 }}
-              style={{
-                height: metrics.screenHeight,
-                left: metrics.holeLeft,
-                top: metrics.holeTop,
-                width: metrics.screenWidth,
-              }}
-              transition={contentTransition}
-            >
-              <span className="lcdEnterLabel">enter ›</span>
-            </motion.div>
-          )}
-        </AnimatePresence>
 
         <AnimatePresence
           mode="wait"
@@ -790,65 +756,37 @@ function App() {
           scale: zoomTransition,
         }}
       >
-        <svg
-          aria-hidden="true"
-          className="maskDef"
-          height={viewportSize.height}
-          width={viewportSize.width}
-        >
-          <defs>
-            <mask
-              id="screen-hole-mask"
-              maskContentUnits="userSpaceOnUse"
-              maskUnits="userSpaceOnUse"
-              height={viewportSize.height}
-              width={viewportSize.width}
-              x="0"
-              y="0"
-            >
-              <rect
-                fill="white"
-                height={viewportSize.height}
-                width={viewportSize.width}
-              />
-              <rect
-                fill="black"
-                height={metrics.screenHeight + 1}
-                rx={metrics.holeRadius}
-                ry={metrics.holeRadius}
-                width={metrics.screenWidth + 1}
-                x={metrics.holeLeft - 0.5}
-                y={metrics.holeTop - 0.5}
-              />
-            </mask>
-            <mask
-              id="device-shell-mask"
-              maskContentUnits="userSpaceOnUse"
-              maskUnits="userSpaceOnUse"
-              height={metrics.deviceHeight}
-              width={metrics.deviceWidth}
-              x="0"
-              y="0"
-            >
-              <rect
-                fill="white"
-                height={metrics.deviceHeight}
-                width={metrics.deviceWidth}
-              />
-              <rect
-                fill="black"
-                height={metrics.screenHeight}
-                rx={metrics.holeRadius}
-                ry={metrics.holeRadius}
-                width={metrics.screenWidth}
-                x={screenX}
-                y={screenY}
-              />
-            </mask>
-          </defs>
-        </svg>
-
-        <div className="foregroundSurface" style={maskStyle} />
+        <div
+          className="foregroundSurface"
+          style={{ height: metrics.holeTop, left: 0, right: 0, top: 0 }}
+        />
+        <div
+          className="foregroundSurface"
+          style={{
+            height: viewportSize.height - holeBottom,
+            left: 0,
+            right: 0,
+            top: holeBottom,
+          }}
+        />
+        <div
+          className="foregroundSurface"
+          style={{
+            height: metrics.screenHeight,
+            left: 0,
+            top: metrics.holeTop,
+            width: metrics.holeLeft,
+          }}
+        />
+        <div
+          className="foregroundSurface"
+          style={{
+            height: metrics.screenHeight,
+            left: holeRight,
+            right: 0,
+            top: metrics.holeTop,
+          }}
+        />
 
         <div className="clickBlockers" aria-hidden="true">
           <div
@@ -884,21 +822,24 @@ function App() {
           />
         </div>
 
-        <div className="grid" style={maskStyle}>
+        <div className="grid">
           {GRID_COLUMNS.map((index) => (
             <div key={index} className="column">
-              {rowIndexes.map((rowIndex) => (
-                <div
-                  key={rowIndex}
-                  className="block"
-                  onMouseEnter={(event) => colorize(event.currentTarget)}
-                  style={{
-                    pointerEvents: isGridBlockInteractive(index, rowIndex)
-                      ? "auto"
-                      : "none",
-                  }}
-                />
-              ))}
+              {rowIndexes.map((rowIndex) => {
+                const interactive = isGridBlockInteractive(index, rowIndex);
+
+                return (
+                  <div
+                    key={rowIndex}
+                    className="block"
+                    onMouseEnter={(event) => colorize(event.currentTarget)}
+                    style={{
+                      pointerEvents: interactive ? "auto" : "none",
+                      visibility: interactive ? "visible" : "hidden",
+                    }}
+                  />
+                );
+              })}
             </div>
           ))}
         </div>
@@ -933,7 +874,6 @@ function App() {
           <motion.div
             animate={{ opacity: deviceOpacity }}
             className="deviceShell"
-            style={deviceMaskStyle}
             transition={{ opacity: deviceTransition }}
           >
             <img className="deviceBase" src="/assets/base/base.svg" alt="" />
@@ -972,6 +912,23 @@ function App() {
                   </a>
                 );
               })}
+            </div>
+
+            <div aria-hidden="true" className="lcdScreenViewport">
+              <AnimatePresence mode="wait">
+                {landingContentVisible && !isExpanded && (
+                  <motion.div
+                    key="landing-ui"
+                    animate={{ opacity: 1 }}
+                    className="lcdLanding"
+                    exit={{ opacity: 0 }}
+                    initial={{ opacity: 0 }}
+                    transition={contentTransition}
+                  >
+                    <span className="lcdEnterLabel">enter ›</span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </motion.div>
         </motion.div>

@@ -53,13 +53,42 @@ body {
   pointer-events: none;
 }
 
+.lcdScreenViewport {
+  --lcd-pixel: clamp(3px, 0.32vw, 6px);
+
+  position: absolute;
+  top: var(--screen-y);
+  left: var(--screen-x);
+  z-index: 3;
+  box-sizing: border-box;
+  width: var(--screen-width);
+  height: var(--screen-height);
+  overflow: hidden;
+  border-radius: calc(var(--device-width) * 10 / 624);
+  background-color: #a3b179;
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.07) 0,
+    rgba(255, 255, 255, 0.07) 1px,
+    transparent 1px,
+    transparent calc(var(--lcd-pixel) + 1px)
+  );
+  color: #1c211a;
+  pointer-events: none;
+}
+
 .lcdLanding {
   position: absolute;
-  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   pointer-events: none;
+}
+
+.lcdScreenViewport .lcdLanding {
+  inset: 0;
+  width: auto;
+  height: auto;
 }
 
 .lcdScreenBezel {
@@ -260,7 +289,6 @@ body {
 
 .foregroundSurface {
   position: absolute;
-  inset: 0;
   background: white;
   pointer-events: none;
 }
@@ -315,6 +343,7 @@ body {
 .deviceShell {
   position: absolute;
   inset: 0;
+  isolation: isolate;
 }
 
 .deviceBase {
