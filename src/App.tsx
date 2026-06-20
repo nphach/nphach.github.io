@@ -321,6 +321,7 @@ function App() {
   const pendingPhaseRef = useRef<
     "await-content-in" | "await-content-out" | null
   >(null);
+  const enterRevealTimerRef = useRef<number | null>(null);
   const viewRef = useRef<View>("landing");
 
   const metrics = useMemo(
@@ -415,27 +416,6 @@ function App() {
     updateLcdMetrics();
     lcdPixelsRef.current.clear();
   }, [view, updateLcdMetrics]);
-
-  useEffect(() => {
-    if (
-      !expandedContentVisible ||
-      pendingPhaseRef.current !== "await-content-in"
-    ) {
-      return;
-    }
-
-    const delay = prefersReducedMotion ? 0 : CONTENT_TRANSITION.duration * 1000;
-    const timer = window.setTimeout(() => {
-      if (pendingPhaseRef.current === "await-content-in") {
-        pendingPhaseRef.current = null;
-        setIsBusy(false);
-      }
-    }, delay);
-
-    return () => {
-      window.clearTimeout(timer);
-    };
-  }, [expandedContentVisible, prefersReducedMotion]);
 
   useEffect(() => {
     const onResize = () => {
@@ -583,6 +563,28 @@ function App() {
     lcdPreviousPointRef.current = null;
   };
 
+  const clearEnterRevealTimer = useCallback(() => {
+    if (enterRevealTimerRef.current !== null) {
+      window.clearTimeout(enterRevealTimerRef.current);
+      enterRevealTimerRef.current = null;
+    }
+  }, []);
+
+  const revealExpandedContent = useCallback(() => {
+    if (pendingPhaseRef.current !== "await-content-in") {
+      return;
+    }
+
+    setView("expanded");
+    setExpandedContentVisible(true);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      clearEnterRevealTimer();
+    };
+  }, [clearEnterRevealTimer]);
+
   const enterExpanded = () => {
     if (isBusy || isExpanded) {
       return;
@@ -592,6 +594,17 @@ function App() {
     setIsBusy(true);
     setLandingContentVisible(false);
     setZoomExpanded(true);
+    clearEnterRevealTimer();
+
+    if (!prefersReducedMotion) {
+      const revealDelay =
+        (ZOOM_TRANSITION.duration - CONTENT_TRANSITION.duration) * 1000;
+
+      enterRevealTimerRef.current = window.setTimeout(
+        revealExpandedContent,
+        revealDelay,
+      );
+    }
   };
 
   const returnToLanding = () => {
@@ -599,6 +612,7 @@ function App() {
       return;
     }
 
+    clearEnterRevealTimer();
     pendingPhaseRef.current = "await-content-out";
     setIsBusy(true);
     setExpandedContentVisible(false);
@@ -606,8 +620,8 @@ function App() {
 
   const handleZoomComplete = () => {
     if (zoomExpanded && view === "landing") {
-      setView("expanded");
-      setExpandedContentVisible(true);
+      clearEnterRevealTimer();
+      revealExpandedContent();
 
       if (prefersReducedMotion) {
         pendingPhaseRef.current = null;
@@ -650,9 +664,25 @@ function App() {
   };
 
   const foregroundScale = zoomExpanded ? metrics.expandedScale : 1;
-  const foregroundOpacity = isBusy ? 1 : view === "expanded" ? 0 : 1;
-  const deviceOpacity = isBusy && zoomExpanded ? 0 : 1;
-  const deviceTransition = prefersReducedMotion ? { duration: 0 } : DEVICE_FADE;
+  const foregroundOpacity =
+    view === "expanded" && (expandedContentVisible || !isBusy)
+      ? 0
+      : isBusy
+        ? 1
+        : view === "expanded"
+          ? 0
+          : 1;
+  const isEnteringExpanded = isBusy && zoomExpanded;
+  const deviceOpacity =
+    isEnteringExpanded || (view === "expanded" && !isBusy) ? 0 : 1;
+  const deviceTransition = prefersReducedMotion
+    ? { duration: 0 }
+    : {
+        opacity: {
+          ...DEVICE_FADE,
+          delay: isEnteringExpanded ? ZOOM_TRANSITION.duration * 0.35 : 0,
+        },
+      };
   const transformOrigin = `${metrics.zoomOriginX}px ${metrics.zoomOriginY}px`;
 
   const holeBottom = metrics.holeTop + metrics.screenHeight;
@@ -749,10 +779,7 @@ function App() {
           willChange: "transform, opacity",
         }}
         transition={{
-          opacity: {
-            duration: prefersReducedMotion ? 0 : 0.16,
-            ease: "easeOut",
-          },
+          opacity: contentTransition,
           scale: zoomTransition,
         }}
       >
