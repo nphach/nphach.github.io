@@ -5,11 +5,16 @@ import {
   useMemo,
   useRef,
   useState,
+  type CSSProperties,
   type PointerEvent,
 } from "react";
 import "./App.css";
+import { BIO, PROFILE_LINKS, PROJECTS, SKILLS } from "./content";
+import { PixelIcon } from "./pixel-icons";
+import { ProjectIcon } from "./project-icons";
 
 const GRID_BLOCK_SIZE_RATIO = 0.05;
+const INVENTORY_MIN_SLOTS = 6;
 const GRID_COLOR = "38, 48, 34";
 const LCD_COLUMN_COUNT = 32;
 const LCD_ROW_COUNT = 30;
@@ -22,53 +27,29 @@ const DEVICE_ASPECT = 624 / 731;
 
 const BUTTON_ART_SOURCES = ["left", "middle", "right"] as const;
 
-const ICONS = {
-  email: {
-    path: "M695 1q20 0 33 13t13 33v464q0 19-13 32t-33 14H46q-19 0-32-14T0 511V47q0-19 14-33T46 1zm-53 97q2-1 2-3t-3-1H101q-2 0-3 1t1 3l259 172q13 10 25 0z",
-    viewBox: "0 0 750 750",
-  },
-  github: {
-    path: "M510 383q23 0 39 21t15 53t-15 52t-39 22t-38-22t-16-52t16-53t38-21m186-193q29 31 46 69t16 90q0 74-18 125t-48 84t-64 52t-70 28t-64 10l-44 2H308q-15 0-44-2t-63-10t-70-28t-65-52t-47-84T0 349q0-51 17-90t45-69q-3-6-3-24t1-42t9-56T88 8q22 3 51 14q25 9 59 25t77 46q18-5 46-8t58-2l58 2q28 1 46 8q42-29 77-46t59-25q29-11 51-14q12 30 19 60t9 56t2 42t-4 24M380 614q58 0 109-6t88-23t59-51t21-90q0-27-10-52t-33-45q-19-18-44-24t-56-5t-64 4t-70 3h-2q-36 0-70-3t-64-4t-55 5t-44 24q-23 20-33 45t-11 52q0 57 22 90t58 51t88 23t109 6zM248 383q23 0 39 21t15 53t-15 52t-39 22t-38-22t-16-52t16-53t38-21",
-    viewBox: "0 0 760 800",
-  },
-  linkedin: {
-    path: "M165 90q0 35-21 59t-62 24q-37 0-59-24T0 95q0-35 23-61T83 8t60 24t22 58M0 750h165V214H0zm560-528q-32 0-57 8t-45 21t-33 27t-21 27h-4l-9-70H243q0 34 2 74t2 86v355h165V457q0-12 1-22t3-19q4-11 11-23t16-21t22-16t29-6q44 0 64 32t19 83v285h165V445q0-57-14-99t-38-70t-58-41t-72-13",
-    viewBox: "0 0 750 850",
-  },
-} as const;
-
 const PHYSICAL_BUTTONS = [
   {
     className: "physicalButton--left",
-    href: "https://github.com/nphach/",
-    icon: "github",
-    label: "GitHub",
+    ...PROFILE_LINKS[0],
   },
   {
     className: "physicalButton--middle",
-    href: "https://www.linkedin.com/in/nphach/",
-    icon: "linkedin",
-    label: "LinkedIn",
+    ...PROFILE_LINKS[1],
   },
   {
     className: "physicalButton--right",
-    href: "mailto:nikkiphach@gmail.com",
-    icon: "email",
-    label: "Email",
+    ...PROFILE_LINKS[2],
   },
-] as const;
-
-const FOOTER_LINKS = [
-  { href: "https://github.com/nphach/", icon: "github", label: "GitHub" },
-  {
-    href: "https://www.linkedin.com/in/nphach/",
-    icon: "linkedin",
-    label: "LinkedIn",
-  },
-  { href: "mailto:nikkiphach@gmail.com", icon: "email", label: "Email" },
 ] as const;
 
 type View = "landing" | "expanded";
+
+type ExpandedSection = "about" | "work";
+
+const EXPANDED_SECTIONS: { id: ExpandedSection; label: string }[] = [
+  { id: "about", label: "about" },
+  { id: "work", label: "work" },
+];
 
 type LcdPoint = {
   x: number;
@@ -112,7 +93,10 @@ type MutableRef<T> = {
   current: T;
 };
 
-type ProfileIconName = keyof typeof ICONS;
+const REVEAL_VARIANTS = {
+  hidden: { opacity: 0, y: 16 },
+  visible: { opacity: 1, y: 0 },
+};
 
 const GRID_COLUMNS = Array.from(
   { length: GRID_COLUMN_COUNT },
@@ -215,15 +199,23 @@ const colorize = (el: HTMLDivElement) => {
   }, 300);
 };
 
-const ProfileIcon = ({ name }: { name: ProfileIconName }) => {
-  const icon = ICONS[name];
+const ProfileNavLinks = ({ itemClassName }: { itemClassName: string }) =>
+  PROFILE_LINKS.map(({ href, icon, label }) => {
+    const external = isExternalLink(href);
 
-  return (
-    <svg viewBox={icon.viewBox} aria-hidden="true">
-      <path fill="currentColor" d={icon.path} />
-    </svg>
-  );
-};
+    return (
+      <a
+        key={label}
+        aria-label={label}
+        className={itemClassName}
+        href={href}
+        target={external ? "_blank" : undefined}
+        rel={external ? "noreferrer" : undefined}
+      >
+        <PixelIcon name={icon} />
+      </a>
+    );
+  });
 
 const getLcdPixelOpacity = (age: number) => {
   if (age <= LCD_TRAIL_HOLD_MS) {
@@ -310,12 +302,21 @@ function App() {
   const [zoomExpanded, setZoomExpanded] = useState(false);
   const [landingContentVisible, setLandingContentVisible] = useState(true);
   const [expandedContentVisible, setExpandedContentVisible] = useState(false);
+  const [scrollFadeVisible, setScrollFadeVisible] = useState(false);
+  const [activeSection, setActiveSection] = useState<ExpandedSection>("about");
+  const [selectedProjectIndex, setSelectedProjectIndex] = useState(0);
+  const selectedProject = PROJECTS[selectedProjectIndex] ?? PROJECTS[0];
+  const inventorySlotCount = Math.max(INVENTORY_MIN_SLOTS, PROJECTS.length);
   const [isBusy, setIsBusy] = useState(false);
   const [viewportSize, setViewportSize] = useState(getViewportSize);
   const lcdAnimationRef = useRef<number | null>(null);
   const lcdCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const lcdDrawingRef = useRef<LcdDrawing | null>(null);
   const lcdLayerRef = useRef<HTMLDivElement | null>(null);
+  const lcdScrollRef = useRef<HTMLDivElement | null>(null);
+  const lcdBodyRef = useRef<HTMLDivElement | null>(null);
+  const lcdExpandedRef = useRef<HTMLDivElement | null>(null);
+  const lcdNavDockRef = useRef<HTMLElement | null>(null);
   const lcdPixelsRef = useRef(new Map<string, LcdPixel>());
   const lcdPreviousPointRef = useRef<LcdPoint | null>(null);
   const pendingPhaseRef = useRef<
@@ -375,7 +376,7 @@ function App() {
     context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
 
     const expanded = viewRef.current === "expanded";
-    let columns = LCD_COLUMN_COUNT;
+    const columns = LCD_COLUMN_COUNT;
     let rows = LCD_ROW_COUNT;
     let pixelSize: number;
     let gridOffsetX: number;
@@ -448,7 +449,7 @@ function App() {
     };
   }, [updateLcdMetrics]);
 
-  const queueLcdTrailRender = () => {
+  const queueLcdTrailRender = useCallback(() => {
     if (lcdAnimationRef.current === null) {
       lcdAnimationRef.current = window.requestAnimationFrame(() =>
         drawLcdTrailFrame(
@@ -459,7 +460,87 @@ function App() {
         ),
       );
     }
-  };
+  }, [updateLcdMetrics]);
+
+  const updateScrollFade = useCallback(() => {
+    const scroll = lcdScrollRef.current;
+
+    if (!scroll) {
+      setScrollFadeVisible(false);
+      return;
+    }
+
+    const threshold = 12;
+    const hasMoreBelow =
+      scroll.scrollTop + scroll.clientHeight < scroll.scrollHeight - threshold;
+
+    setScrollFadeVisible(hasMoreBelow);
+  }, []);
+
+  const updateExpandedLayout = useCallback(() => {
+    const nav = lcdNavDockRef.current;
+    const expanded =
+      lcdExpandedRef.current ?? nav?.closest<HTMLElement>(".lcdExpanded");
+
+    if (expanded && nav) {
+      expanded.style.setProperty("--lcd-nav-offset", `${nav.offsetHeight}px`);
+    }
+
+    updateScrollFade();
+  }, [updateScrollFade]);
+
+  useEffect(() => {
+    if (!expandedContentVisible) {
+      return;
+    }
+
+    const scroll = lcdScrollRef.current;
+    const body = lcdBodyRef.current;
+    const nav = lcdNavDockRef.current;
+
+    if (!scroll) {
+      return;
+    }
+
+    updateExpandedLayout();
+
+    const onScroll = () => {
+      updateScrollFade();
+    };
+
+    scroll.addEventListener("scroll", onScroll, { passive: true });
+
+    const resizeObserver =
+      typeof ResizeObserver === "undefined"
+        ? null
+        : new ResizeObserver(updateExpandedLayout);
+
+    resizeObserver?.observe(scroll);
+
+    if (body) {
+      resizeObserver?.observe(body);
+    }
+
+    if (nav) {
+      resizeObserver?.observe(nav);
+    }
+
+    return () => {
+      scroll.removeEventListener("scroll", onScroll);
+      resizeObserver?.disconnect();
+    };
+  }, [expandedContentVisible, updateExpandedLayout, updateScrollFade]);
+
+  useEffect(() => {
+    const scroll = lcdScrollRef.current;
+
+    if (!scroll) {
+      return;
+    }
+
+    scroll.scrollTop = 0;
+    updateScrollFade();
+  }, [activeSection, updateScrollFade]);
 
   const addLcdPixel = (
     { x, y }: LcdPoint,
@@ -591,6 +672,7 @@ function App() {
     }
 
     pendingPhaseRef.current = "await-content-in";
+    setActiveSection("about");
     setIsBusy(true);
     setLandingContentVisible(false);
     setZoomExpanded(true);
@@ -646,6 +728,7 @@ function App() {
 
     pendingPhaseRef.current = null;
     setIsBusy(false);
+    updateExpandedLayout();
   };
 
   const handleExpandedContentHidden = () => {
@@ -703,125 +786,275 @@ function App() {
     );
   };
 
+  const revealTransition = prefersReducedMotion
+    ? { duration: 0 }
+    : {
+        duration: 0.45,
+        ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
+      };
+
   return (
-    <main className="appContainer">
-      <div
-        ref={lcdLayerRef}
-        className="lcdLayer"
-        onPointerLeave={handleLcdPointerLeave}
-        onPointerMove={handleLcdPointerMove}
-      >
-        <canvas ref={lcdCanvasRef} className="lcdTrail" aria-hidden="true" />
+    <>
+      <a className="skipLink" href="#main-content">
+        skip to content
+      </a>
 
-        <AnimatePresence
-          mode="wait"
-          onExitComplete={handleExpandedContentHidden}
+      <main className="appContainer" id="main-content">
+        <div
+          ref={lcdLayerRef}
+          className="lcdLayer"
+          onPointerLeave={handleLcdPointerLeave}
+          onPointerMoveCapture={handleLcdPointerMove}
         >
-          {expandedContentVisible && (
-            <motion.div
-              key="expanded-content"
-              animate={{ opacity: 1 }}
-              className="lcdExpanded"
-              exit={{ opacity: 0 }}
-              initial={{ opacity: 0 }}
-              onAnimationComplete={handleExpandedContentShown}
-              transition={contentTransition}
-            >
-              <button
-                className="lcdBack"
-                disabled={isBusy}
-                onClick={returnToLanding}
-                type="button"
+          <canvas ref={lcdCanvasRef} className="lcdTrail" aria-hidden="true" />
+
+          <AnimatePresence
+            mode="wait"
+            onExitComplete={handleExpandedContentHidden}
+          >
+            {expandedContentVisible && (
+              <motion.div
+                key="expanded-content"
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                initial={{ opacity: 0 }}
+                onAnimationComplete={handleExpandedContentShown}
+                transition={contentTransition}
               >
-                ‹ back
-              </button>
+                <div ref={lcdExpandedRef} className="lcdExpanded">
+                  <div className="lcdScrollShell">
+                    <div ref={lcdScrollRef} className="lcdScroll">
+                      <div ref={lcdBodyRef} className="lcdBody">
+                        <AnimatePresence mode="wait">
+                          <motion.div
+                            key={activeSection}
+                            animate="visible"
+                            aria-labelledby={`lcd-tab-${activeSection}`}
+                            className="lcdSectionPanel"
+                            id={`lcd-panel-${activeSection}`}
+                            initial={prefersReducedMotion ? false : "hidden"}
+                            role="tabpanel"
+                            transition={revealTransition}
+                            variants={REVEAL_VARIANTS}
+                          >
+                            {activeSection === "about" && (
+                              <>
+                                <p className="lcdName">nikki phach</p>
+                                <p className="lcdTagline">software engineer</p>
+                                <p className="lcdBio">{BIO}</p>
+                                <section
+                                  aria-labelledby="skills-heading"
+                                  className="lcdSection"
+                                >
+                                  <h2
+                                    className="lcdSectionTitle"
+                                    id="skills-heading"
+                                  >
+                                    skills
+                                  </h2>
+                                  <ul className="lcdSkillList">
+                                    {SKILLS.map((skill) => (
+                                      <li key={skill} className="lcdSkill">
+                                        {skill}
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </section>
+                              </>
+                            )}
 
-              <div className="lcdBody">
-                <p className="lcdName">nikki phach</p>
-                <p className="lcdTagline">software engineer</p>
-                <p className="lcdBio">under construction...</p>
-              </div>
+                            {activeSection === "work" && (
+                              <section
+                                aria-labelledby="projects-heading"
+                                className="lcdSection lcdInventory"
+                              >
+                                <h2
+                                  className="lcdSectionTitle"
+                                  id="projects-heading"
+                                >
+                                  project inventory
+                                </h2>
+                                <ul
+                                  aria-label="Project inventory"
+                                  className="lcdInventoryRow"
+                                  role="listbox"
+                                  style={
+                                    {
+                                      "--inventory-slots": inventorySlotCount,
+                                    } as CSSProperties
+                                  }
+                                >
+                                  {PROJECTS.map((project, index) => (
+                                    <li key={project.name}>
+                                      <button
+                                        aria-selected={
+                                          selectedProjectIndex === index
+                                        }
+                                        className={`lcdInventorySlot${selectedProjectIndex === index ? " lcdInventorySlot--selected" : ""}`}
+                                        onClick={() =>
+                                          setSelectedProjectIndex(index)
+                                        }
+                                        role="option"
+                                        type="button"
+                                      >
+                                        <span className="lcdInventorySlotIndex">
+                                          {String(index + 1).padStart(2, "0")}
+                                        </span>
+                                        <div className="lcdInventorySlotIcon">
+                                          <ProjectIcon name={project.icon} />
+                                        </div>
+                                        <span className="lcdInventorySlotName">
+                                          {project.name}
+                                        </span>
+                                      </button>
+                                    </li>
+                                  ))}
+                                  {Array.from({
+                                    length: inventorySlotCount - PROJECTS.length,
+                                  }).map((_, index) => (
+                                    <li
+                                      key={`empty-slot-${index}`}
+                                      aria-hidden="true"
+                                    >
+                                      <div className="lcdInventorySlot lcdInventorySlot--empty">
+                                        <span className="lcdInventorySlotIndex">
+                                          {String(
+                                            PROJECTS.length + index + 1,
+                                          ).padStart(2, "0")}
+                                        </span>
+                                        <div
+                                          aria-hidden="true"
+                                          className="lcdInventorySlotIcon"
+                                        />
+                                        <span className="lcdInventorySlotName">
+                                          —
+                                        </span>
+                                      </div>
+                                    </li>
+                                  ))}
+                                </ul>
+                                <article
+                                  aria-labelledby="inventory-detail-heading"
+                                  className="lcdInventoryDetail"
+                                >
+                                  <h3
+                                    className="lcdProjectName"
+                                    id="inventory-detail-heading"
+                                  >
+                                    {selectedProject.name}
+                                  </h3>
+                                  <p className="lcdProjectDescription">
+                                    {selectedProject.description}
+                                  </p>
+                                  <ul
+                                    aria-label={`${selectedProject.name} tags`}
+                                    className="lcdTagList"
+                                  >
+                                    {selectedProject.tags.map((tag) => (
+                                      <li key={tag} className="lcdTag">
+                                        {tag}
+                                      </li>
+                                    ))}
+                                  </ul>
+                                  <ul className="lcdProjectActionList">
+                                    {selectedProject.links.map(
+                                      (link, index) => (
+                                        <li key={link.label}>
+                                          <a
+                                            className={`lcdProjectAction${index === 0 ? " lcdProjectAction--primary" : ""}`}
+                                            href={link.href}
+                                            rel="noreferrer"
+                                            target="_blank"
+                                          >
+                                            {link.label}
+                                          </a>
+                                        </li>
+                                      ),
+                                    )}
+                                  </ul>
+                                </article>
+                              </section>
+                            )}
+                          </motion.div>
+                        </AnimatePresence>
+                      </div>
+                    </div>
+                  </div>
 
-              <footer className="lcdFooter" aria-label="Profile links">
-                {FOOTER_LINKS.map(({ href, icon, label }) => {
-                  const external = isExternalLink(href);
+                  <div
+                    aria-hidden="true"
+                    className={`lcdScrollFade${scrollFadeVisible ? " lcdScrollFade--visible" : ""}`}
+                  />
 
-                  return (
-                    <a
-                      key={label}
-                      className="lcdFooterLink"
-                      href={href}
-                      target={external ? "_blank" : undefined}
-                      rel={external ? "noreferrer" : undefined}
-                    >
-                      <span className="lcdFooterIcon" aria-hidden="true">
-                        <ProfileIcon name={icon} />
-                      </span>
-                      {label}
-                    </a>
-                  );
-                })}
-              </footer>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+                  <nav
+                    ref={lcdNavDockRef}
+                    aria-label="Page navigation"
+                    className="lcdNavDock"
+                  >
+                    <div className="lcdNavPill">
+                      <button
+                        aria-label="Back"
+                        className="lcdNavItem lcdNavItem--back"
+                        disabled={isBusy}
+                        onClick={returnToLanding}
+                        type="button"
+                      >
+                        <PixelIcon name="back" />
+                      </button>
+                      <div
+                        aria-label="Sections"
+                        className="lcdSectionTabs"
+                        role="tablist"
+                      >
+                        {EXPANDED_SECTIONS.map(({ id, label }) => (
+                          <button
+                            key={id}
+                            aria-controls={`lcd-panel-${id}`}
+                            aria-selected={activeSection === id}
+                            className={`lcdSectionTab${activeSection === id ? " lcdSectionTab--active" : ""}`}
+                            id={`lcd-tab-${id}`}
+                            onClick={() => setActiveSection(id)}
+                            role="tab"
+                            type="button"
+                          >
+                            {label}
+                          </button>
+                        ))}
+                      </div>
+                      <div aria-label="Contact links" className="lcdNavLinks">
+                        <ProfileNavLinks itemClassName="lcdNavItem" />
+                      </div>
+                    </div>
+                  </nav>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
 
-      <motion.div
-        animate={{
-          opacity: foregroundOpacity,
-          scale: foregroundScale,
-        }}
-        className={`foregroundLayer${isExpanded && !isBusy ? " foregroundLayer--inactive" : ""}`}
-        onAnimationComplete={handleZoomComplete}
-        style={{
-          transformOrigin,
-          willChange: "transform, opacity",
-        }}
-        transition={{
-          opacity: contentTransition,
-          scale: zoomTransition,
-        }}
-      >
-        <div
-          className="foregroundSurface"
-          style={{ height: metrics.holeTop, left: 0, right: 0, top: 0 }}
-        />
-        <div
-          className="foregroundSurface"
-          style={{
-            height: viewportSize.height - holeBottom,
-            left: 0,
-            right: 0,
-            top: holeBottom,
+        <motion.div
+          animate={{
+            opacity: foregroundOpacity,
+            scale: foregroundScale,
           }}
-        />
-        <div
-          className="foregroundSurface"
+          className={`foregroundLayer${isExpanded && !isBusy ? " foregroundLayer--inactive" : ""}`}
+          inert={isExpanded ? true : undefined}
+          onAnimationComplete={handleZoomComplete}
           style={{
-            height: metrics.screenHeight,
-            left: 0,
-            top: metrics.holeTop,
-            width: metrics.holeLeft,
+            transformOrigin,
+            willChange: "transform, opacity",
           }}
-        />
-        <div
-          className="foregroundSurface"
-          style={{
-            height: metrics.screenHeight,
-            left: holeRight,
-            right: 0,
-            top: metrics.holeTop,
+          transition={{
+            opacity: contentTransition,
+            scale: zoomTransition,
           }}
-        />
-
-        <div className="clickBlockers" aria-hidden="true">
+        >
           <div
-            className="clickBlocker"
+            className="foregroundSurface"
             style={{ height: metrics.holeTop, left: 0, right: 0, top: 0 }}
           />
           <div
-            className="clickBlocker"
+            className="foregroundSurface"
             style={{
               height: viewportSize.height - holeBottom,
               left: 0,
@@ -830,7 +1063,7 @@ function App() {
             }}
           />
           <div
-            className="clickBlocker"
+            className="foregroundSurface"
             style={{
               height: metrics.screenHeight,
               left: 0,
@@ -839,7 +1072,7 @@ function App() {
             }}
           />
           <div
-            className="clickBlocker"
+            className="foregroundSurface"
             style={{
               height: metrics.screenHeight,
               left: holeRight,
@@ -847,120 +1080,156 @@ function App() {
               top: metrics.holeTop,
             }}
           />
-        </div>
 
-        <div className="grid">
-          {GRID_COLUMNS.map((index) => (
-            <div key={index} className="column">
-              {rowIndexes.map((rowIndex) => {
-                const interactive = isGridBlockInteractive(index, rowIndex);
+          <div className="clickBlockers" aria-hidden="true">
+            <div
+              className="clickBlocker"
+              style={{ height: metrics.holeTop, left: 0, right: 0, top: 0 }}
+            />
+            <div
+              className="clickBlocker"
+              style={{
+                height: viewportSize.height - holeBottom,
+                left: 0,
+                right: 0,
+                top: holeBottom,
+              }}
+            />
+            <div
+              className="clickBlocker"
+              style={{
+                height: metrics.screenHeight,
+                left: 0,
+                top: metrics.holeTop,
+                width: metrics.holeLeft,
+              }}
+            />
+            <div
+              className="clickBlocker"
+              style={{
+                height: metrics.screenHeight,
+                left: holeRight,
+                right: 0,
+                top: metrics.holeTop,
+              }}
+            />
+          </div>
 
-                return (
-                  <div
-                    key={rowIndex}
-                    className="block"
-                    onMouseEnter={(event) => colorize(event.currentTarget)}
-                    style={{
-                      pointerEvents: interactive ? "auto" : "none",
-                      visibility: interactive ? "visible" : "hidden",
-                    }}
-                  />
-                );
-              })}
-            </div>
-          ))}
-        </div>
+          <div className="grid">
+            {GRID_COLUMNS.map((index) => (
+              <div key={index} className="column">
+                {rowIndexes.map((rowIndex) => {
+                  const interactive = isGridBlockInteractive(index, rowIndex);
 
-        {landingContentVisible && !isExpanded && (
-          <button
-            aria-label="enter"
-            className="lcdEnterOverlay"
-            disabled={isBusy}
-            onClick={enterExpanded}
-            style={{
-              height: metrics.screenHeight,
-              left: metrics.holeLeft,
-              top: metrics.holeTop,
-              width: metrics.screenWidth,
-            }}
-            type="button"
-          />
-        )}
+                  return (
+                    <div
+                      key={rowIndex}
+                      className="block"
+                      onPointerEnter={(event) => colorize(event.currentTarget)}
+                      style={{
+                        pointerEvents: interactive ? "auto" : "none",
+                        visibility: interactive ? "visible" : "hidden",
+                      }}
+                    />
+                  );
+                })}
+              </div>
+            ))}
+          </div>
 
-        <motion.div
-          className="device"
-          style={{
-            ["--device-height" as string]: `${metrics.deviceHeight}px`,
-            ["--device-width" as string]: `${metrics.deviceWidth}px`,
-            height: metrics.deviceHeight,
-            width: metrics.deviceWidth,
-          }}
-        >
-          <div aria-hidden="true" className="lcdScreenBezel" />
+          {landingContentVisible && !isExpanded && (
+            <button
+              aria-label="enter"
+              className="lcdEnterOverlay"
+              disabled={isBusy}
+              onClick={enterExpanded}
+              style={{
+                height: metrics.screenHeight,
+                left: metrics.holeLeft,
+                top: metrics.holeTop,
+                width: metrics.screenWidth,
+              }}
+              type="button"
+            />
+          )}
 
           <motion.div
-            animate={{ opacity: deviceOpacity }}
-            className="deviceShell"
-            transition={{ opacity: deviceTransition }}
+            className="device"
+            style={{
+              ["--device-height" as string]: `${metrics.deviceHeight}px`,
+              ["--device-width" as string]: `${metrics.deviceWidth}px`,
+              height: metrics.deviceHeight,
+              width: metrics.deviceWidth,
+            }}
           >
-            <img className="deviceBase" src="/assets/base/base.svg" alt="" />
-            {BUTTON_ART_SOURCES.map((name) => (
+            <div aria-hidden="true" className="lcdScreenBezel" />
+
+            <motion.div
+              animate={{ opacity: deviceOpacity }}
+              className="deviceShell"
+              transition={{ opacity: deviceTransition }}
+            >
+              <img className="deviceBase" src="/assets/base/base.svg" alt="" />
+              {BUTTON_ART_SOURCES.map((name) => (
+                <img
+                  key={name}
+                  className="buttonArt"
+                  src={`/assets/base/${name}.svg`}
+                  alt=""
+                  aria-hidden="true"
+                />
+              ))}
+
               <img
-                key={name}
-                className="buttonArt"
-                src={`/assets/base/${name}.svg`}
-                alt=""
-                aria-hidden="true"
+                className="deviceHeader"
+                src="/assets/base/header.svg"
+                alt="nikkiphach"
               />
-            ))}
 
-            <img
-              className="deviceHeader"
-              src="/assets/base/header.svg"
-              alt="nikkiphach"
-            />
+              {view === "landing" && (
+                <div className="physicalButtons" aria-label="Profile links">
+                  {PHYSICAL_BUTTONS.map(({ className, href, icon, label }) => {
+                    const external = isExternalLink(href);
 
-            <div className="physicalButtons" aria-label="Profile links">
-              {PHYSICAL_BUTTONS.map(({ className, href, icon, label }) => {
-                const external = isExternalLink(href);
+                    return (
+                      <a
+                        key={label}
+                        aria-label={label}
+                        className={`physicalButton ${className}`}
+                        href={href}
+                        target={external ? "_blank" : undefined}
+                        rel={external ? "noreferrer" : undefined}
+                      >
+                        <span className="physicalButtonIcon" aria-hidden="true">
+                          <PixelIcon name={icon} />
+                        </span>
+                      </a>
+                    );
+                  })}
+                </div>
+              )}
 
-                return (
-                  <a
-                    key={label}
-                    aria-label={label}
-                    className={`physicalButton ${className}`}
-                    href={href}
-                    target={external ? "_blank" : undefined}
-                    rel={external ? "noreferrer" : undefined}
-                  >
-                    <span className="physicalButtonIcon" aria-hidden="true">
-                      <ProfileIcon name={icon} />
-                    </span>
-                  </a>
-                );
-              })}
-            </div>
-
-            <div aria-hidden="true" className="lcdScreenViewport">
-              <AnimatePresence mode="wait">
-                {landingContentVisible && !isExpanded && (
-                  <motion.div
-                    key="landing-ui"
-                    animate={{ opacity: 1 }}
-                    className="lcdLanding"
-                    exit={{ opacity: 0 }}
-                    initial={{ opacity: 0 }}
-                    transition={contentTransition}
-                  >
-                    <span className="lcdEnterLabel">enter ›</span>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+              <div aria-hidden="true" className="lcdScreenViewport">
+                <AnimatePresence mode="wait">
+                  {landingContentVisible && !isExpanded && (
+                    <motion.div
+                      key="landing-ui"
+                      animate={{ opacity: 1 }}
+                      className="lcdLanding"
+                      exit={{ opacity: 0 }}
+                      initial={{ opacity: 0 }}
+                      transition={contentTransition}
+                    >
+                      <span className="lcdEnterLabel">enter ›</span>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </motion.div>
           </motion.div>
         </motion.div>
-      </motion.div>
-    </main>
+      </main>
+    </>
   );
 }
 
