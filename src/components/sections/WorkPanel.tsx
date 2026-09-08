@@ -102,16 +102,13 @@ export function WorkPanel() {
           <h3 className="lcdProjectName" id="inventory-detail-heading">
             {selectedProject.name}
           </h3>
-          <p className="lcdInventoryMeta">
-            {selectedProject.kind} · {selectedProject.status} ·{" "}
-            {selectedProject.year}
-          </p>
+          <p className="lcdInventoryMeta">{selectedProject.meta}</p>
         </InventoryDetailSection>
         <InventoryStatGrid
           stats={[
             { label: "type", value: selectedProject.kind },
             { label: "status", value: selectedProject.status },
-            { label: "year", value: String(selectedProject.year) },
+            { label: "year", value: selectedProject.year },
           ]}
         />
         <InventoryDetailSection>

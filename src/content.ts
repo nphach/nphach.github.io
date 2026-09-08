@@ -16,10 +16,11 @@ export type ProjectStatus = "live" | "wip" | "archived";
 export type Project = {
   name: string;
   description: string;
+  meta: string;
   icon: ProjectIconName;
   kind: string;
   status: ProjectStatus;
-  year: number;
+  year: string;
   links: ProjectLink[];
   tags: string[];
 };
@@ -46,11 +47,12 @@ export const PROJECTS: Project[] = [
   {
     name: "Kotoba Tag!",
     description:
-      "Shiritori-style Japanese vocab game. Translate fast, chain words, and beat the clock.",
+      "Shiritori-style Japanese vocab game. Translate fast, chain words, beat the clock and test your vocabulary.",
+    meta: "japanese vocab · arcade pace · machine learning",
     icon: "kotoba-tag",
     kind: "game",
     status: "live",
-    year: 2025,
+    year: "2025",
     links: [
       {
         href: "https://kotoba-tag.com",
@@ -61,33 +63,36 @@ export const PROJECTS: Project[] = [
         label: "GitHub",
       },
     ],
-    tags: ["TypeScript", "Game", "Japanese"],
+    tags: ["TypeScript", "shadcn/ui", "XState", "Vitest"],
   },
   {
     name: "nphach.github.io",
     description:
-      "This Tamagotchi-inspired portfolio with zoom transitions and an LCD drawing layer.",
+      "[This] Tamagotchi-inspired portfolio with zoom transitions and an LCD drawing layer.",
+    meta: "tamagotchi UI · lcd canvas · github pages",
     icon: "portfolio",
     kind: "portfolio",
     status: "live",
-    year: 2026,
+    year: "2026",
     links: [
       {
         href: "https://github.com/nphach/nphach.github.io",
         label: "GitHub",
       },
     ],
-    tags: ["React", "Motion", "CSS"],
+    tags: ["TypeScript", "React", "Motion", "CSS", "Github Pages"],
   },
 ];
 
 export const SKILLS = [
+  "BSc in Computer Science",
   "TypeScript",
   "React",
   "Python",
-  "Node.js",
   "Git",
-  "Japanese",
+  "HTML/ CSS",
+  "REST APIs",
+  "SQL",
 ] as const;
 
 export type PlayerStat = {
@@ -98,7 +103,7 @@ export type PlayerStat = {
 export const PLAYER_STATS: PlayerStat[] = [
   { label: "type", value: "engineer" },
   { label: "focus", value: "front-end" },
-  { label: "region", value: "bay area" },
+  { label: "region", value: "las vegas" },
 ];
 
 export type PlayerMood = {
@@ -112,7 +117,8 @@ export const PLAYER_MOODS: PlayerMood[] = [
   { label: "play", level: 7 },
 ];
 
-export const CURRENT_QUEST = "building language tools & playful web UIs";
+export const CURRENT_QUEST =
+  "building and deploying tools at Konami Gaming; pursuing a Master's in Software Engineering for AI at Boston Univeristy";
 
 export const BIO =
-  "Software engineer building playful, interactive web experiences. Interested in language tools, creative UI, and thoughtful front-end craft.";
+  "Software engineer building playful, interactive web experiences. Interested in language tools, creative UI, and thoughtful AI integrations.";
