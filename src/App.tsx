@@ -11,7 +11,7 @@ import {
 import "./App.css";
 import { BIO, PROFILE_LINKS, PROJECTS, SKILLS } from "./content";
 import { PixelIcon } from "./pixel-icons";
-import { ProjectIcon } from "./project-icons";
+import { EmptyInventorySlotIcon, ProjectIcon } from "./project-icons";
 
 const GRID_BLOCK_SIZE_RATIO = 0.05;
 const INVENTORY_MIN_SLOTS = 6;
@@ -868,12 +868,40 @@ function App() {
                                 aria-labelledby="projects-heading"
                                 className="lcdSection lcdInventory"
                               >
-                                <h2
-                                  className="lcdSectionTitle"
-                                  id="projects-heading"
-                                >
-                                  project inventory
-                                </h2>
+                                <header className="lcdInventoryHeader">
+                                  <div className="lcdInventoryHeaderPrimary">
+                                    <h2
+                                      className="lcdSectionTitle lcdInventoryHeaderTitle"
+                                      id="projects-heading"
+                                    >
+                                      project inventory
+                                    </h2>
+                                    <p className="lcdInventoryHeaderSub">
+                                      selected · slot{" "}
+                                      {String(selectedProjectIndex + 1).padStart(
+                                        2,
+                                        "0",
+                                      )}
+                                    </p>
+                                  </div>
+                                  <div className="lcdInventoryHeaderStats">
+                                    <span
+                                      aria-label={`${PROJECTS.length} of unlimited collected`}
+                                      className="lcdInventoryHeaderCounter"
+                                    >
+                                      {PROJECTS.length} /{" "}
+                                      <span
+                                        aria-hidden="true"
+                                        className="lcdInventoryHeaderCounterInfinity"
+                                      >
+                                        ∞
+                                      </span>
+                                    </span>
+                                    <span className="lcdInventoryHeaderCounterLabel">
+                                      collected
+                                    </span>
+                                  </div>
+                                </header>
                                 <ul
                                   aria-label="Project inventory"
                                   className="lcdInventoryRow"
@@ -924,10 +952,12 @@ function App() {
                                         </span>
                                         <div
                                           aria-hidden="true"
-                                          className="lcdInventorySlotIcon"
-                                        />
+                                          className="lcdInventorySlotIcon lcdInventorySlotIcon--empty"
+                                        >
+                                          <EmptyInventorySlotIcon />
+                                        </div>
                                         <span className="lcdInventorySlotName">
-                                          —
+                                          ???
                                         </span>
                                       </div>
                                     </li>
@@ -937,41 +967,92 @@ function App() {
                                   aria-labelledby="inventory-detail-heading"
                                   className="lcdInventoryDetail"
                                 >
-                                  <h3
-                                    className="lcdProjectName"
-                                    id="inventory-detail-heading"
-                                  >
-                                    {selectedProject.name}
-                                  </h3>
-                                  <p className="lcdProjectDescription">
-                                    {selectedProject.description}
+                                  <p className="lcdInventoryDetailLabel lcdInventoryDetailHeader">
+                                    <span aria-hidden="true">&gt; </span>
+                                    item inspect
                                   </p>
-                                  <ul
-                                    aria-label={`${selectedProject.name} tags`}
-                                    className="lcdTagList"
-                                  >
-                                    {selectedProject.tags.map((tag) => (
-                                      <li key={tag} className="lcdTag">
-                                        {tag}
-                                      </li>
-                                    ))}
-                                  </ul>
-                                  <ul className="lcdProjectActionList">
-                                    {selectedProject.links.map(
-                                      (link, index) => (
-                                        <li key={link.label}>
-                                          <a
-                                            className={`lcdProjectAction${index === 0 ? " lcdProjectAction--primary" : ""}`}
-                                            href={link.href}
-                                            rel="noreferrer"
-                                            target="_blank"
-                                          >
-                                            {link.label}
-                                          </a>
+                                  <div className="lcdInventoryDetailBody">
+                                    <div className="lcdInventoryDetailSection">
+                                      <h3
+                                        className="lcdProjectName"
+                                        id="inventory-detail-heading"
+                                      >
+                                        {selectedProject.name}
+                                      </h3>
+                                      <p className="lcdInventoryMeta">
+                                        {selectedProject.kind} ·{" "}
+                                        {selectedProject.status} ·{" "}
+                                        {selectedProject.year}
+                                      </p>
+                                    </div>
+                                    <dl className="lcdInventoryStatGrid">
+                                    <div className="lcdInventoryStat">
+                                      <dt className="lcdInventoryStatLabel">
+                                        type
+                                      </dt>
+                                      <dd className="lcdInventoryStatValue">
+                                        {selectedProject.kind}
+                                      </dd>
+                                    </div>
+                                    <div className="lcdInventoryStat">
+                                      <dt className="lcdInventoryStatLabel">
+                                        status
+                                      </dt>
+                                      <dd className="lcdInventoryStatValue">
+                                        {selectedProject.status}
+                                      </dd>
+                                    </div>
+                                    <div className="lcdInventoryStat">
+                                      <dt className="lcdInventoryStatLabel">
+                                        year
+                                      </dt>
+                                      <dd className="lcdInventoryStatValue">
+                                        {selectedProject.year}
+                                      </dd>
+                                    </div>
+                                  </dl>
+                                  <div className="lcdInventoryDetailSection">
+                                    <p className="lcdProjectDescription">
+                                      {selectedProject.description}
+                                    </p>
+                                  </div>
+                                  <div className="lcdInventoryDetailSection">
+                                    <p className="lcdInventoryDetailLabel">
+                                      attributes
+                                    </p>
+                                    <ul
+                                      aria-label={`${selectedProject.name} tags`}
+                                      className="lcdTagList"
+                                    >
+                                      {selectedProject.tags.map((tag) => (
+                                        <li key={tag} className="lcdTag">
+                                          {tag}
                                         </li>
-                                      ),
-                                    )}
-                                  </ul>
+                                      ))}
+                                    </ul>
+                                  </div>
+                                  <div className="lcdInventoryDetailSection">
+                                    <p className="lcdInventoryDetailLabel">
+                                      links
+                                    </p>
+                                    <ul className="lcdProjectActionList">
+                                      {selectedProject.links.map(
+                                        (link, index) => (
+                                          <li key={link.label}>
+                                            <a
+                                              className={`lcdProjectAction${index === 0 ? " lcdProjectAction--primary" : ""}`}
+                                              href={link.href}
+                                              rel="noreferrer"
+                                              target="_blank"
+                                            >
+                                              {link.label}
+                                            </a>
+                                          </li>
+                                        ),
+                                      )}
+                                    </ul>
+                                  </div>
+                                  </div>
                                 </article>
                               </section>
                             )}

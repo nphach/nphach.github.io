@@ -11,10 +11,15 @@ export type ProjectLink = {
 
 export type ProjectIconName = "kotoba-tag" | "portfolio";
 
+export type ProjectStatus = "live" | "wip" | "archived";
+
 export type Project = {
   name: string;
   description: string;
   icon: ProjectIconName;
+  kind: string;
+  status: ProjectStatus;
+  year: number;
   links: ProjectLink[];
   tags: string[];
 };
@@ -43,6 +48,9 @@ export const PROJECTS: Project[] = [
     description:
       "Shiritori-style Japanese vocab game. Translate fast, chain words, and beat the clock.",
     icon: "kotoba-tag",
+    kind: "game",
+    status: "live",
+    year: 2025,
     links: [
       {
         href: "https://kotoba-tag.com",
@@ -60,6 +68,9 @@ export const PROJECTS: Project[] = [
     description:
       "This Tamagotchi-inspired portfolio with zoom transitions and an LCD drawing layer.",
     icon: "portfolio",
+    kind: "portfolio",
+    status: "live",
+    year: 2026,
     links: [
       {
         href: "https://github.com/nphach/nphach.github.io",

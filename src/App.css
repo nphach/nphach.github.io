@@ -453,6 +453,13 @@ body {
 .lcdSectionTitle,
 .lcdProjectName,
 .lcdProjectDescription,
+.lcdInventoryHeaderSub,
+.lcdInventoryHeaderCounter,
+.lcdInventoryHeaderCounterLabel,
+.lcdInventoryMeta,
+.lcdInventoryDetailLabel,
+.lcdInventoryStatLabel,
+.lcdInventoryStatValue,
 .lcdInventorySlotIndex,
 .lcdInventorySlotName,
 .lcdTag,
@@ -504,6 +511,69 @@ body {
   letter-spacing: 0.14em;
   text-transform: lowercase;
   opacity: 0.72;
+}
+
+.lcdInventoryHeader {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.55rem;
+  border-bottom: 1px solid rgba(var(--color-lcd-pixel), 0.18);
+}
+
+.lcdInventoryHeaderPrimary {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.lcdInventoryHeaderTitle {
+  margin: 0;
+}
+
+.lcdInventoryHeaderSub {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+  opacity: 0.62;
+}
+
+.lcdInventoryHeaderStats {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.1rem;
+  flex-shrink: 0;
+}
+
+.lcdInventoryHeaderCounter {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+}
+
+.lcdInventoryHeaderCounterInfinity {
+  display: inline-block;
+  font-size: 1.45em;
+  line-height: 1;
+  letter-spacing: 0;
+  transform: translateY(0.06em);
+}
+
+.lcdInventoryHeaderCounterLabel {
+  font-family: var(--font-body);
+  font-size: 0.58rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: lowercase;
+  opacity: 0.58;
 }
 
 .lcdInventoryRow {
@@ -570,6 +640,10 @@ body {
   opacity: 0.5;
 }
 
+.lcdInventorySlotIcon--empty {
+  opacity: 0.72;
+}
+
 .lcdInventorySlotIndex {
   align-self: flex-start;
   font-family: var(--font-body);
@@ -605,13 +679,121 @@ body {
   z-index: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
+  gap: 0;
+  height: clamp(16rem, 48vh, 23rem);
   margin-top: 0.75rem;
   padding: 0.75rem;
   border: 2px solid rgba(var(--color-lcd-pixel), 0.52);
   background: var(--color-lcd-panel);
   box-shadow: 3px 3px 0 rgba(var(--color-lcd-pixel), 0.28);
   text-align: left;
+  overflow: hidden;
+}
+
+.lcdInventoryDetailHeader {
+  flex-shrink: 0;
+  padding-bottom: 0.45rem;
+  border-bottom: 1px solid rgba(var(--color-lcd-pixel), 0.14);
+}
+
+.lcdInventoryDetailBody {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.65rem;
+  min-height: 0;
+  margin-top: 0.55rem;
+  padding-right: 0.15rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--color-lcd-pixel), 0.38) transparent;
+}
+
+.lcdInventoryDetailBody::-webkit-scrollbar {
+  width: 4px;
+}
+
+.lcdInventoryDetailBody::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.lcdInventoryDetailBody::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(var(--color-lcd-pixel), 0.38);
+}
+
+.lcdInventoryDetailBody::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--color-lcd-pixel), 0.52);
+}
+
+.lcdInventoryDetailSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.lcdInventoryDetailSection + .lcdInventoryDetailSection {
+  padding-top: 0.55rem;
+  border-top: 1px solid rgba(var(--color-lcd-pixel), 0.14);
+}
+
+.lcdInventoryDetailLabel {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: lowercase;
+  opacity: 0.58;
+}
+
+.lcdInventoryMeta {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
+  opacity: 0.72;
+}
+
+.lcdInventoryStatGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0.55rem 0 0;
+  border-top: 1px solid rgba(var(--color-lcd-pixel), 0.14);
+}
+
+.lcdInventoryStat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+  padding: 0.4rem 0.45rem;
+  border: 1px solid rgba(var(--color-lcd-pixel), 0.16);
+  background: color-mix(in srgb, var(--color-lcd-bg) 88%, transparent);
+}
+
+.lcdInventoryStatLabel {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.58rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: lowercase;
+  opacity: 0.58;
+}
+
+.lcdInventoryStatValue {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  text-transform: lowercase;
 }
 
 .lcdInventorySlot:focus-visible {
@@ -631,6 +813,10 @@ body {
   display: block;
   width: 100%;
   height: 100%;
+}
+
+.projectIcon--empty {
+  opacity: 0.72;
 }
 
 .lcdProjectName {
