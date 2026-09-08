@@ -121,23 +121,25 @@ export function WorkPanel() {
             ariaLabel={`${selectedProject.name} tags`}
           />
         </InventoryDetailSection>
-        <InventoryDetailSection>
-          <p className="lcdInventoryDetailLabel">links</p>
-          <ul className="lcdProjectActionList">
-            {selectedProject.links.map((link, index) => (
-              <li key={link.label}>
-                <a
-                  className={`lcdProjectAction${index === 0 ? " lcdProjectAction--primary" : ""}`}
-                  href={link.href}
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  {link.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </InventoryDetailSection>
+        {selectedProject.links.length > 0 ? (
+          <InventoryDetailSection>
+            <p className="lcdInventoryDetailLabel">links</p>
+            <ul className="lcdProjectActionList">
+              {selectedProject.links.map((link, index) => (
+                <li key={link.label}>
+                  <a
+                    className={`lcdProjectAction${index === 0 ? " lcdProjectAction--primary" : ""}`}
+                    href={link.href}
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </InventoryDetailSection>
+        ) : null}
       </InventoryDetail>
     </section>
   );

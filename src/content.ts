@@ -9,7 +9,11 @@ export type ProjectLink = {
   label: string;
 };
 
-export type ProjectIconName = "kotoba-tag" | "portfolio";
+export type ProjectIconName =
+  | "kotoba-tag"
+  | "jp-parallel-gloss"
+  | "portfolio"
+  | "kaomoji-board";
 
 export type ProjectStatus = "live" | "wip" | "archived";
 
@@ -48,7 +52,7 @@ export const PROJECTS: Project[] = [
     name: "Kotoba Tag!",
     description:
       "Shiritori-style Japanese vocab game. Translate fast, chain words, beat the clock and test your vocabulary.",
-    meta: "japanese vocab · arcade pace · machine learning",
+    meta: "japanese vocab · arcade pace",
     icon: "kotoba-tag",
     kind: "game",
     status: "live",
@@ -66,10 +70,27 @@ export const PROJECTS: Project[] = [
     tags: ["TypeScript", "shadcn/ui", "XState", "Vitest"],
   },
   {
+    name: "jp-parallel-gloss",
+    description:
+      "Sentence-transformer for Japanese–English gloss similarity. Fine-tuned on 4M+ JMDict pairs and served from Hugging Face for Kotoba Tag.",
+    meta: "gloss similarity · embeddings",
+    icon: "jp-parallel-gloss",
+    kind: "model",
+    status: "live",
+    year: "2025",
+    links: [
+      {
+        href: "https://huggingface.co/nphach/jp-parallel-gloss",
+        label: "Hugging Face",
+      },
+    ],
+    tags: ["Python", "PyTorch", "sentence-transformers", "Hugging Face"],
+  },
+  {
     name: "nphach.github.io",
     description:
       "[This] Tamagotchi-inspired portfolio with zoom transitions and an LCD drawing layer.",
-    meta: "tamagotchi UI · lcd canvas · github pages",
+    meta: "tamagotchi UI · lcd canvas",
     icon: "portfolio",
     kind: "portfolio",
     status: "live",
@@ -81,6 +102,18 @@ export const PROJECTS: Project[] = [
       },
     ],
     tags: ["TypeScript", "React", "Motion", "CSS", "Github Pages"],
+  },
+  {
+    name: "Kaomoji Board",
+    description:
+      "Custom iOS keyboard that drops Japanese emoticons into any text field. Mood categories, recents, search, and a companion library with backups.",
+    meta: "mobile app · keyboard integration",
+    icon: "kaomoji-board",
+    kind: "iOS app",
+    status: "wip",
+    year: "2026",
+    links: [],
+    tags: ["SwiftUI", "SwiftData", "iOS"],
   },
 ];
 
