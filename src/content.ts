@@ -90,5 +90,29 @@ export const SKILLS = [
   "Japanese",
 ] as const;
 
+export type PlayerStat = {
+  label: string;
+  value: string;
+};
+
+export const PLAYER_STATS: PlayerStat[] = [
+  { label: "type", value: "engineer" },
+  { label: "focus", value: "front-end" },
+  { label: "region", value: "bay area" },
+];
+
+export type PlayerMood = {
+  label: string;
+  level: number;
+};
+
+export const PLAYER_MOODS: PlayerMood[] = [
+  { label: "craft", level: 8 },
+  { label: "curiosity", level: 9 },
+  { label: "play", level: 7 },
+];
+
+export const CURRENT_QUEST = "building language tools & playful web UIs";
+
 export const BIO =
   "Software engineer building playful, interactive web experiences. Interested in language tools, creative UI, and thoughtful front-end craft.";

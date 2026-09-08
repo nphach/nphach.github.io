@@ -9,12 +9,21 @@ import {
   type PointerEvent,
 } from "react";
 import "./App.css";
-import { BIO, PROFILE_LINKS, PROJECTS, SKILLS } from "./content";
+import {
+  BIO,
+  CURRENT_QUEST,
+  PLAYER_MOODS,
+  PLAYER_STATS,
+  PROFILE_LINKS,
+  PROJECTS,
+  SKILLS,
+} from "./content";
 import { PixelIcon } from "./pixel-icons";
 import { EmptyInventorySlotIcon, ProjectIcon } from "./project-icons";
 
 const GRID_BLOCK_SIZE_RATIO = 0.05;
 const INVENTORY_MIN_SLOTS = 6;
+const MOOD_BAR_SEGMENTS = 10;
 const GRID_COLOR = "38, 48, 34";
 const LCD_COLUMN_COUNT = 32;
 const LCD_ROW_COUNT = 30;
@@ -190,6 +199,12 @@ const getDeviceMetrics = (
 };
 
 const isExternalLink = (href: string) => !href.startsWith("mailto:");
+
+const renderMoodBar = (level: number, segments = MOOD_BAR_SEGMENTS) => {
+  const filled = Math.min(Math.max(Math.round(level), 0), segments);
+
+  return `${"▓".repeat(filled)}${"░".repeat(segments - filled)}`;
+};
 
 const colorize = (el: HTMLDivElement) => {
   el.style.backgroundColor = `rgb(${GRID_COLOR})`;
@@ -841,24 +856,113 @@ function App() {
                               <>
                                 <p className="lcdName">nikki phach</p>
                                 <p className="lcdTagline">software engineer</p>
-                                <p className="lcdBio">{BIO}</p>
                                 <section
-                                  aria-labelledby="skills-heading"
-                                  className="lcdSection"
+                                  aria-labelledby="profile-heading"
+                                  className="lcdSection lcdInventory lcdProfile"
                                 >
-                                  <h2
-                                    className="lcdSectionTitle"
-                                    id="skills-heading"
+                                  <header className="lcdInventoryHeader">
+                                    <div className="lcdInventoryHeaderPrimary">
+                                      <h2
+                                        className="lcdSectionTitle lcdInventoryHeaderTitle"
+                                        id="profile-heading"
+                                      >
+                                        player profile
+                                      </h2>
+                                      <p className="lcdInventoryHeaderSub">
+                                        status · active
+                                      </p>
+                                    </div>
+                                    <div className="lcdInventoryHeaderStats">
+                                      <span className="lcdInventoryHeaderCounter">
+                                        v1.0
+                                      </span>
+                                      <span className="lcdInventoryHeaderCounterLabel">
+                                        online
+                                      </span>
+                                    </div>
+                                  </header>
+
+                                  <ul
+                                    aria-label="Status meters"
+                                    className="lcdMoodMeters"
                                   >
-                                    skills
-                                  </h2>
-                                  <ul className="lcdSkillList">
-                                    {SKILLS.map((skill) => (
-                                      <li key={skill} className="lcdSkill">
-                                        {skill}
+                                    {PLAYER_MOODS.map((mood) => (
+                                      <li key={mood.label} className="lcdMoodMeter">
+                                        <span className="lcdMoodMeterLabel">
+                                          {mood.label}
+                                        </span>
+                                        <span
+                                          aria-label={`${mood.label} ${mood.level} out of ${MOOD_BAR_SEGMENTS}`}
+                                          className="lcdMoodMeterBar"
+                                          role="meter"
+                                          aria-valuemax={MOOD_BAR_SEGMENTS}
+                                          aria-valuemin={0}
+                                          aria-valuenow={mood.level}
+                                        >
+                                          {renderMoodBar(mood.level)}
+                                        </span>
                                       </li>
                                     ))}
                                   </ul>
+
+                                  <article
+                                    aria-labelledby="character-inspect-heading"
+                                    className="lcdInventoryDetail"
+                                  >
+                                    <p
+                                      className="lcdInventoryDetailLabel lcdInventoryDetailHeader"
+                                      id="character-inspect-heading"
+                                    >
+                                      <span aria-hidden="true">&gt; </span>
+                                      character inspect
+                                    </p>
+                                    <div className="lcdInventoryDetailBody">
+                                      <div className="lcdInventoryDetailSection">
+                                        <p className="lcdProjectDescription">
+                                          {BIO}
+                                        </p>
+                                        <p className="lcdProfileQuest">
+                                          <span className="lcdProfileQuestLabel">
+                                            current quest
+                                          </span>
+                                          {CURRENT_QUEST}
+                                        </p>
+                                      </div>
+                                      <dl className="lcdInventoryStatGrid">
+                                        {PLAYER_STATS.map((stat) => (
+                                          <div
+                                            key={stat.label}
+                                            className="lcdInventoryStat"
+                                          >
+                                            <dt className="lcdInventoryStatLabel">
+                                              {stat.label}
+                                            </dt>
+                                            <dd className="lcdInventoryStatValue">
+                                              {stat.value}
+                                            </dd>
+                                          </div>
+                                        ))}
+                                      </dl>
+                                      <div className="lcdInventoryDetailSection">
+                                        <p
+                                          className="lcdInventoryDetailLabel"
+                                          id="skills-heading"
+                                        >
+                                          equipped skills
+                                        </p>
+                                        <ul
+                                          aria-labelledby="skills-heading"
+                                          className="lcdTagList"
+                                        >
+                                          {SKILLS.map((skill) => (
+                                            <li key={skill} className="lcdTag">
+                                              {skill}
+                                            </li>
+                                          ))}
+                                        </ul>
+                                      </div>
+                                    </div>
+                                  </article>
                                 </section>
                               </>
                             )}
