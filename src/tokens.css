@@ -1,0 +1,34 @@
+:root {
+  --color-lcd-bg: #a3b179;
+  --color-lcd-fg: #1c211a;
+  --color-lcd-accent: #263022;
+  --color-lcd-pixel: 38, 48, 34;
+  --color-surface-mask: #f4f4f0;
+  --color-surface-elevated: #eeeee8;
+  --color-icon: #eeeff2;
+  --color-icon-hover: #dce8b6;
+
+  --font-display: "Jacquard 12", serif;
+  --font-body: "JetBrains Mono", ui-monospace, monospace;
+
+  --z-lcd: 0;
+  --z-grain: 1;
+  --z-foreground: 2;
+  --z-device-shell: 3;
+  --z-interactive: 4;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-flicker: cubic-bezier(0.45, 0.05, 0.55, 0.95);
+
+  --focus-ring: 2px solid rgba(var(--color-lcd-pixel), 0.55);
+  --focus-offset: 2px;
+
+  --lcd-halo-shadow: 0 0 14px color-mix(in srgb, var(--color-lcd-bg) 92%, transparent),
+    0 0 5px color-mix(in srgb, var(--color-lcd-bg) 98%, transparent);
+
+  --color-lcd-panel: color-mix(in srgb, var(--color-lcd-bg) 90%, var(--color-lcd-accent));
+  --color-lcd-panel-hover: color-mix(in srgb, var(--color-lcd-bg) 84%, var(--color-lcd-accent));
+  --color-lcd-panel-slot: color-mix(in srgb, var(--color-lcd-bg) 72%, white);
+  --color-lcd-panel-slot-hover: color-mix(in srgb, var(--color-lcd-bg) 68%, white);
+}
