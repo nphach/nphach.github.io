@@ -28,7 +28,7 @@ export function AboutPanel() {
           subtitle="status · active"
           stats={
             <>
-              <span className="lcdInventoryHeaderCounter">v1.0</span>
+              <span className="lcdInventoryHeaderCounter">v2.0</span>
               <span className="lcdInventoryHeaderCounterLabel">online</span>
             </>
           }

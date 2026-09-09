@@ -101,11 +101,15 @@ export const PROJECTS: Project[] = [
     year: "2026",
     links: [
       {
+        href: "https://nikki.ph",
+        label: "nikki.ph",
+      },
+      {
         href: "https://github.com/nphach/nphach.github.io",
         label: "GitHub",
       },
     ],
-    tags: ["TypeScript", "React", "Motion", "CSS", "Github Pages"],
+    tags: ["TypeScript", "React", "Motion", "CSS"],
   },
   {
     name: "Kaomoji Board",
