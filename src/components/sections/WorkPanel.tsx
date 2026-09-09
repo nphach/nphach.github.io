@@ -115,7 +115,9 @@ export function WorkPanel({ selectedSlug }: WorkPanelProps) {
           <h3 className="lcdProjectName" id="inventory-detail-heading">
             {selectedProject.name}
           </h3>
-          <p className="lcdInventoryMeta">{selectedProject.meta}</p>
+          <p className="lcdInventoryMeta">
+            {selectedProject.meta.join(" · ")}
+          </p>
         </InventoryDetailSection>
         <InventoryStatGrid
           stats={[

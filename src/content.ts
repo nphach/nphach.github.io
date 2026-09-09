@@ -21,7 +21,7 @@ export type Project = {
   name: string;
   slug: string;
   description: string;
-  meta: string;
+  meta: string[];
   icon: ProjectIconName;
   kind: string;
   status: ProjectStatus;
@@ -54,7 +54,7 @@ export const PROJECTS: Project[] = [
     slug: "kotoba-tag",
     description:
       "Shiritori-style Japanese vocab game. Translate fast, chain words, beat the clock and test your vocabulary.",
-    meta: "japanese vocab · arcade pace",
+    meta: ["japanese vocab", "arcade pace"],
     icon: "kotoba-tag",
     kind: "game",
     status: "live",
@@ -75,8 +75,8 @@ export const PROJECTS: Project[] = [
     name: "jp-parallel-gloss",
     slug: "jp-parallel-gloss",
     description:
-      "Sentence-transformer for Japanese–English gloss similarity. Fine-tuned on 4M+ JMDict pairs and served from Hugging Face for Kotoba Tag.",
-    meta: "gloss similarity · embeddings",
+      "Sentence-transformer for Japanese–English gloss similarity. Fine-tuned on 4M+ JMDict pairs and served from Hugging Face to drive Kotoba Tag gameplay.",
+    meta: ["gloss similarity", "embeddings"],
     icon: "jp-parallel-gloss",
     kind: "model",
     status: "live",
@@ -94,16 +94,12 @@ export const PROJECTS: Project[] = [
     slug: "nikki-ph",
     description:
       "[This] Tamagotchi-inspired portfolio with zoom transitions and an LCD drawing layer.",
-    meta: "tamagotchi UI · lcd canvas",
+    meta: ["tamagotchi UI", "lcd canvas"],
     icon: "portfolio",
     kind: "portfolio",
     status: "live",
     year: "2026",
     links: [
-      {
-        href: "https://nikki.ph",
-        label: "nikki.ph",
-      },
       {
         href: "https://github.com/nphach/nikki.ph",
         label: "GitHub",
@@ -116,7 +112,7 @@ export const PROJECTS: Project[] = [
     slug: "kaomoji-board",
     description:
       "Custom iOS keyboard that drops Japanese emoticons into any text field. Mood categories, recents, search, and a companion library with backups.",
-    meta: "mobile app · keyboard integration",
+    meta: ["mobile app", "keyboard integration"],
     icon: "kaomoji-board",
     kind: "iOS app",
     status: "wip",
