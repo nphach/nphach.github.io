@@ -1,6 +1,8 @@
 import type { RefObject } from "react";
+import { Link } from "react-router";
 import { ProfileNavLinks } from "../profile/ProfileNavLinks";
 import { EXPANDED_SECTIONS } from "../../constants/motion";
+import { getSectionPath } from "../../lib/portfolio-route";
 import { PixelIcon } from "../../pixel-icons";
 import type { ExpandedSection } from "../../types/view";
 
@@ -9,7 +11,7 @@ type LcdNavDockProps = {
   isBusy: boolean;
   lcdNavDockRef: RefObject<HTMLElement | null>;
   onBack: () => void;
-  onSectionChange: (section: ExpandedSection) => void;
+  workPath: string;
 };
 
 export function LcdNavDock({
@@ -17,7 +19,7 @@ export function LcdNavDock({
   isBusy,
   lcdNavDockRef,
   onBack,
-  onSectionChange,
+  workPath,
 }: LcdNavDockProps) {
   return (
     <nav
@@ -37,18 +39,22 @@ export function LcdNavDock({
         </button>
         <div aria-label="Sections" className="lcdSectionTabs" role="tablist">
           {EXPANDED_SECTIONS.map(({ id, label }) => (
-            <button
+            <Link
               key={id}
               aria-controls={`lcd-panel-${id}`}
               aria-selected={activeSection === id}
               className={`lcdSectionTab${activeSection === id ? " lcdSectionTab--active" : ""}`}
               id={`lcd-tab-${id}`}
-              onClick={() => onSectionChange(id)}
+              onClick={(event) => {
+                if (isBusy) {
+                  event.preventDefault();
+                }
+              }}
               role="tab"
-              type="button"
+              to={getSectionPath(id, workPath)}
             >
               {label}
-            </button>
+            </Link>
           ))}
         </div>
         <div aria-label="Contact links" className="lcdNavLinks">

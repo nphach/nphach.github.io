@@ -16,7 +16,8 @@ type LcdExpandedViewProps = {
   onContentShown: () => void;
   onRegisterLayout: (updateLayout: () => void) => void;
   onReturnToLanding: () => void;
-  onSectionChange: (section: ExpandedSection) => void;
+  selectedProjectSlug: string | null;
+  workPath: string;
   prefersReducedMotion: boolean | null;
 };
 
@@ -29,7 +30,8 @@ export function LcdExpandedView({
   onContentShown,
   onRegisterLayout,
   onReturnToLanding,
-  onSectionChange,
+  selectedProjectSlug,
+  workPath,
   prefersReducedMotion,
 }: LcdExpandedViewProps) {
   const {
@@ -56,7 +58,7 @@ export function LcdExpandedView({
   if (activeSection === "about") {
     panelContent = <AboutPanel />;
   } else {
-    panelContent = <WorkPanel />;
+    panelContent = <WorkPanel selectedSlug={selectedProjectSlug} />;
   }
 
   return (
@@ -103,7 +105,7 @@ export function LcdExpandedView({
               isBusy={isBusy}
               lcdNavDockRef={lcdNavDockRef}
               onBack={onReturnToLanding}
-              onSectionChange={onSectionChange}
+              workPath={workPath}
             />
           </div>
         </motion.div>

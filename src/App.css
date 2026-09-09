@@ -337,6 +337,7 @@ body {
   letter-spacing: 0.08em;
   line-height: 1;
   text-transform: lowercase;
+  text-decoration: none;
   cursor: pointer;
   transition:
     background-color 180ms var(--ease-out-expo),
@@ -604,6 +605,7 @@ body {
     inset -2px -2px 0 rgba(var(--color-lcd-pixel), 0.12);
   color: inherit;
   font: inherit;
+  text-decoration: none;
   cursor: pointer;
   image-rendering: pixelated;
   transition:
@@ -1243,4 +1245,68 @@ body {
   .physicalButton {
     transition: none;
   }
+}
+
+.notFoundPage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100dvh;
+  padding: 1.5rem;
+  background: var(--color-lcd-bg);
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.07) 0,
+    rgba(255, 255, 255, 0.07) 1px,
+    transparent 1px,
+    transparent 5px
+  );
+  color: var(--color-lcd-fg);
+  font-family: var(--font-body);
+  text-align: center;
+}
+
+.notFoundPage h1 {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 8vw, 4rem);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.notFoundPage p {
+  margin: 0 0 1.5rem;
+  max-width: 28rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  opacity: 0.85;
+}
+
+.notFoundPageLink {
+  display: inline-block;
+  padding: 0.65rem 1.25rem;
+  border-radius: 999px;
+  background: rgba(var(--color-lcd-pixel), 0.12);
+  color: var(--color-lcd-fg);
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  text-transform: lowercase;
+  transition:
+    transform 180ms var(--ease-out-expo),
+    background-color 180ms var(--ease-out-expo);
+}
+
+.notFoundPageLink:hover {
+  background: rgba(var(--color-lcd-pixel), 0.2);
+}
+
+.notFoundPageLink:active {
+  transform: scale(0.98);
+}
+
+.notFoundPageLink:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }

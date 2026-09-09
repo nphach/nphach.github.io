@@ -19,6 +19,7 @@ export type ProjectStatus = "live" | "wip" | "archived";
 
 export type Project = {
   name: string;
+  slug: string;
   description: string;
   meta: string;
   icon: ProjectIconName;
@@ -50,6 +51,7 @@ export const PROFILE_LINKS: ProfileLink[] = [
 export const PROJECTS: Project[] = [
   {
     name: "Kotoba Tag!",
+    slug: "kotoba-tag",
     description:
       "Shiritori-style Japanese vocab game. Translate fast, chain words, beat the clock and test your vocabulary.",
     meta: "japanese vocab · arcade pace",
@@ -71,6 +73,7 @@ export const PROJECTS: Project[] = [
   },
   {
     name: "jp-parallel-gloss",
+    slug: "jp-parallel-gloss",
     description:
       "Sentence-transformer for Japanese–English gloss similarity. Fine-tuned on 4M+ JMDict pairs and served from Hugging Face for Kotoba Tag.",
     meta: "gloss similarity · embeddings",
@@ -87,7 +90,8 @@ export const PROJECTS: Project[] = [
     tags: ["Python", "PyTorch", "sentence-transformers", "Hugging Face"],
   },
   {
-    name: "nphach.github.io",
+    name: "nikki.ph",
+    slug: "nikki-ph",
     description:
       "[This] Tamagotchi-inspired portfolio with zoom transitions and an LCD drawing layer.",
     meta: "tamagotchi UI · lcd canvas",
@@ -105,6 +109,7 @@ export const PROJECTS: Project[] = [
   },
   {
     name: "Kaomoji Board",
+    slug: "kaomoji-board",
     description:
       "Custom iOS keyboard that drops Japanese emoticons into any text field. Mood categories, recents, search, and a companion library with backups.",
     meta: "mobile app · keyboard integration",

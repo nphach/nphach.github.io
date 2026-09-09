@@ -5,22 +5,26 @@ import {
   ZOOM_TRANSITION,
 } from "../constants/motion";
 import type { DeviceMetrics } from "../types/device";
-import type { ExpandedSection, View } from "../types/view";
+import type { View } from "../types/view";
 
 type UsePortfolioViewOptions = {
   prefersReducedMotion: boolean;
   metrics: DeviceMetrics;
+  wantsExpanded: boolean;
 };
 
 export function usePortfolioView({
   prefersReducedMotion,
   metrics,
+  wantsExpanded,
 }: UsePortfolioViewOptions) {
-  const [view, setView] = useState<View>("landing");
-  const [zoomExpanded, setZoomExpanded] = useState(false);
-  const [landingContentVisible, setLandingContentVisible] = useState(true);
-  const [expandedContentVisible, setExpandedContentVisible] = useState(false);
-  const [activeSection, setActiveSection] = useState<ExpandedSection>("about");
+  const [view, setView] = useState<View>(wantsExpanded ? "expanded" : "landing");
+  const [zoomExpanded, setZoomExpanded] = useState(wantsExpanded);
+  const [landingContentVisible, setLandingContentVisible] = useState(
+    !wantsExpanded,
+  );
+  const [expandedContentVisible, setExpandedContentVisible] =
+    useState(wantsExpanded);
   const [isBusy, setIsBusy] = useState(false);
   const pendingPhaseRef = useRef<
     "await-content-in" | "await-content-out" | null
@@ -68,7 +72,6 @@ export function usePortfolioView({
     }
 
     pendingPhaseRef.current = "await-content-in";
-    setActiveSection("about");
     setIsBusy(true);
     setLandingContentVisible(false);
     setZoomExpanded(true);
@@ -101,6 +104,29 @@ export function usePortfolioView({
     setIsBusy(true);
     setExpandedContentVisible(false);
   }, [clearEnterRevealTimer, isBusy, isExpanded]);
+
+  useEffect(() => {
+    if (isBusy) {
+      return;
+    }
+
+    if (wantsExpanded && !isExpanded) {
+      // URL is an external system (including browser back/forward).
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- start enter from route
+      enterExpanded();
+      return;
+    }
+
+    if (!wantsExpanded && isExpanded) {
+      returnToLanding();
+    }
+  }, [
+    enterExpanded,
+    isBusy,
+    isExpanded,
+    returnToLanding,
+    wantsExpanded,
+  ]);
 
   const handleZoomComplete = useCallback(() => {
     if (zoomExpanded && view === "landing") {
@@ -177,11 +203,9 @@ export function usePortfolioView({
   const transformOrigin = `${metrics.zoomOriginX}px ${metrics.zoomOriginY}px`;
 
   return {
-    activeSection,
     contentTransition,
     deviceOpacity,
     deviceTransition,
-    enterExpanded,
     expandedContentVisible,
     foregroundOpacity,
     foregroundScale,
@@ -192,8 +216,6 @@ export function usePortfolioView({
     isExpanded,
     landingContentVisible,
     registerExpandedLayout,
-    returnToLanding,
-    setActiveSection,
     transformOrigin,
     view,
     zoomTransition,

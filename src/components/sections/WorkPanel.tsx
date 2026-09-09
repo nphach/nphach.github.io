@@ -1,6 +1,8 @@
-import { useState, type CSSProperties } from "react";
+import { type CSSProperties } from "react";
+import { Link } from "react-router";
 import { INVENTORY_MIN_SLOTS } from "../../constants/inventory";
 import { PROJECTS } from "../../content";
+import { getWorkPath } from "../../lib/portfolio-route";
 import { EmptyInventorySlotIcon, ProjectIcon } from "../../project-icons";
 import { PixelIcon } from "../../pixel-icons";
 import {
@@ -11,8 +13,15 @@ import { InventoryHeader } from "../inventory/InventoryHeader";
 import { InventoryStatGrid } from "../inventory/InventoryStatGrid";
 import { TagList } from "../inventory/TagList";
 
-export function WorkPanel() {
-  const [selectedProjectIndex, setSelectedProjectIndex] = useState(0);
+type WorkPanelProps = {
+  selectedSlug: string | null;
+};
+
+export function WorkPanel({ selectedSlug }: WorkPanelProps) {
+  const selectedProjectIndex = Math.max(
+    0,
+    PROJECTS.findIndex((project) => project.slug === selectedSlug),
+  );
   const selectedProject = PROJECTS[selectedProjectIndex] ?? PROJECTS[0];
   const inventorySlotCount = Math.max(INVENTORY_MIN_SLOTS, PROJECTS.length);
 
@@ -52,32 +61,35 @@ export function WorkPanel() {
       <ul
         aria-label="Project inventory"
         className="lcdInventoryRow"
-        role="listbox"
         style={
           {
             "--inventory-slots": inventorySlotCount,
           } as CSSProperties
         }
       >
-        {PROJECTS.map((project, index) => (
-          <li key={project.name}>
-            <button
-              aria-selected={selectedProjectIndex === index}
-              className={`lcdInventorySlot${selectedProjectIndex === index ? " lcdInventorySlot--selected" : ""}`}
-              onClick={() => setSelectedProjectIndex(index)}
-              role="option"
-              type="button"
-            >
-              <span className="lcdInventorySlotIndex">
-                {String(index + 1).padStart(2, "0")}
-              </span>
-              <div className="lcdInventorySlotIcon">
-                <ProjectIcon name={project.icon} />
-              </div>
-              <span className="lcdInventorySlotName">{project.name}</span>
-            </button>
-          </li>
-        ))}
+        {PROJECTS.map((project, index) => {
+          const selected = selectedProjectIndex === index;
+
+          return (
+            <li key={project.slug}>
+              <Link
+                aria-current={
+                  selectedSlug === project.slug ? "page" : undefined
+                }
+                className={`lcdInventorySlot${selected ? " lcdInventorySlot--selected" : ""}`}
+                to={getWorkPath(project.slug)}
+              >
+                <span className="lcdInventorySlotIndex">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <div className="lcdInventorySlotIcon">
+                  <ProjectIcon name={project.icon} />
+                </div>
+                <span className="lcdInventorySlotName">{project.name}</span>
+              </Link>
+            </li>
+          );
+        })}
         {Array.from({
           length: inventorySlotCount - PROJECTS.length,
         }).map((_, index) => (
