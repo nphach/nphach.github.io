@@ -105,7 +105,7 @@ export const PROJECTS: Project[] = [
         label: "nikki.ph",
       },
       {
-        href: "https://github.com/nphach/nphach.github.io",
+        href: "https://github.com/nphach/nikki.ph",
         label: "GitHub",
       },
     ],
