@@ -127,3 +127,9 @@ export const addLcdTrail = (
     );
   }
 };
+
+export const isPointInTrailDeadZone = (
+  clientX: number,
+  clientY: number,
+  selector: string,
+) => document.elementFromPoint(clientX, clientY)?.closest(selector) != null;

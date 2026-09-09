@@ -613,10 +613,9 @@ body {
     transform 180ms var(--ease-out-expo);
 }
 
-.lcdInventorySlot:hover,
 .lcdInventorySlot:focus-visible {
-  border-color: rgba(var(--color-lcd-pixel), 0.58);
-  background: var(--color-lcd-panel-slot-hover);
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 
 .lcdInventorySlot--selected {
@@ -794,11 +793,6 @@ body {
   text-transform: lowercase;
 }
 
-.lcdInventorySlot:focus-visible {
-  outline: var(--focus-ring);
-  outline-offset: var(--focus-offset);
-}
-
 .projectIcon {
   display: flex;
   align-items: center;
@@ -861,15 +855,20 @@ body {
     opacity 180ms var(--ease-out-expo);
 }
 
-.lcdProjectAction::before {
-  content: "►";
-  font-size: 0.58rem;
+.lcdProjectAction .pixelIcon {
+  width: 0.72rem;
+  height: 0.72rem;
   opacity: 0.72;
 }
 
 .lcdProjectAction:hover,
 .lcdProjectAction:focus-visible {
   color: var(--color-lcd-accent);
+  opacity: 1;
+}
+
+.lcdProjectAction:hover .pixelIcon,
+.lcdProjectAction:focus-visible .pixelIcon {
   opacity: 1;
 }
 
@@ -886,7 +885,7 @@ body {
   font-weight: 500;
 }
 
-.lcdProjectAction--primary::before {
+.lcdProjectAction--primary .pixelIcon {
   opacity: 1;
 }
 

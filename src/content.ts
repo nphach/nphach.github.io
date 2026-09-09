@@ -136,7 +136,7 @@ export type PlayerStat = {
 export const PLAYER_STATS: PlayerStat[] = [
   { label: "type", value: "engineer" },
   { label: "focus", value: "front-end" },
-  { label: "region", value: "las vegas" },
+  { label: "region", value: "new york" },
 ];
 
 export type PlayerMood = {

@@ -1,11 +1,13 @@
 import arrowLeftSvg from "@hackernoon/pixel-icon-library/icons/SVG/regular/arrow-left.svg?raw";
 import envelopeSvg from "@hackernoon/pixel-icon-library/icons/SVG/regular/envelope.svg?raw";
+import externalLinkSolidSvg from "@hackernoon/pixel-icon-library/icons/SVG/solid/external-link-solid.svg?raw";
 import githubSvg from "@hackernoon/pixel-icon-library/icons/SVG/brands/github.svg?raw";
 import linkedinSvg from "@hackernoon/pixel-icon-library/icons/SVG/brands/linkedin.svg?raw";
 
 const PIXEL_ICONS = {
   back: arrowLeftSvg,
   email: envelopeSvg,
+  externalLink: externalLinkSolidSvg,
   github: githubSvg,
   linkedin: linkedinSvg,
 } as const;

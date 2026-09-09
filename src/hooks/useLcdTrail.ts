@@ -3,11 +3,13 @@ import {
   LCD_COLUMN_COUNT,
   LCD_PIXEL_GAP_RATIO,
   LCD_ROW_COUNT,
+  LCD_TRAIL_DEAD_ZONE_SELECTOR,
 } from "../constants/lcd";
 import { getDeviceMetrics } from "../lib/device-metrics";
 import {
   addLcdTrail,
   drawLcdTrailFrame,
+  isPointInTrailDeadZone,
 } from "../lib/lcd-trail";
 import type { LcdDrawing, LcdPixel, LcdPoint } from "../types/lcd";
 import type { View } from "../types/view";
@@ -159,6 +161,17 @@ export function useLcdTrail({ view, isBusy }: UseLcdTrailOptions) {
 
   const handlePointerMove = (event: PointerEvent<HTMLDivElement>) => {
     if (isBusy || !isPointInActiveLcd(event.clientX, event.clientY)) {
+      return;
+    }
+
+    if (
+      isPointInTrailDeadZone(
+        event.clientX,
+        event.clientY,
+        LCD_TRAIL_DEAD_ZONE_SELECTOR,
+      )
+    ) {
+      lcdPreviousPointRef.current = null;
       return;
     }
 

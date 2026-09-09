@@ -2,6 +2,7 @@ import { useState, type CSSProperties } from "react";
 import { INVENTORY_MIN_SLOTS } from "../../constants/inventory";
 import { PROJECTS } from "../../content";
 import { EmptyInventorySlotIcon, ProjectIcon } from "../../project-icons";
+import { PixelIcon } from "../../pixel-icons";
 import {
   InventoryDetail,
   InventoryDetailSection,
@@ -133,6 +134,7 @@ export function WorkPanel() {
                     rel="noreferrer"
                     target="_blank"
                   >
+                    <PixelIcon name="externalLink" />
                     {link.label}
                   </a>
                 </li>
