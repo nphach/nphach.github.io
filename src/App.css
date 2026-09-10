@@ -609,10 +609,15 @@ body {
   cursor: pointer;
   image-rendering: pixelated;
   transition:
-    background-color 180ms var(--ease-out-expo),
-    border-color 180ms var(--ease-out-expo),
-    box-shadow 180ms var(--ease-out-expo),
-    transform 180ms var(--ease-out-expo);
+    background-color 80ms var(--ease-out-expo),
+    border-color 80ms var(--ease-out-expo),
+    box-shadow 80ms var(--ease-out-expo),
+    transform 80ms var(--ease-out-expo);
+}
+
+.lcdInventorySlot:hover:not(.lcdInventorySlot--empty) {
+  border-color: rgba(var(--color-lcd-pixel), 0.58);
+  background: var(--color-lcd-panel-slot-hover);
 }
 
 .lcdInventorySlot:focus-visible {
